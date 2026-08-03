@@ -1,0 +1,79 @@
+name: Deploy worker
+
+# The worker deploys separately from the web app.
+#
+# `apps/web` is deployed by Vercel's own Git integration (preview per PR,
+# production on merge). The worker cannot run on Vercel — it is long-lived and
+# runs scheduled work (spec §15.2) — so it builds a container here and is
+# deployed to the always-on host.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/worker/**'
+      - 'packages/**'
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/deploy-worker.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-worker
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    name: Build worker image
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Log in to the container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: apps/worker/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}/worker:latest
+            ghcr.io/${{ github.repository }}/worker:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # Deployment is intentionally a separate, manual-approval step.
+  #
+  # Decision D8 (worker host) is still open — see STATE.md §7. Once it is
+  # settled, add the host's deploy action here and gate it on a GitHub
+  # environment so a production rollout requires approval.
+  deploy:
+    name: Deploy to worker host
+    needs: build
+    runs-on: ubuntu-latest
+    environment: production-worker
+    steps:
+      - name: Pending host selection
+        run: |
+          echo "Worker image built and pushed to ghcr.io."
+          echo "Deploy step is not wired: decision D8 (worker host) is open."
+          echo "See docs/adr/0007-worker-host.md."
+
+  # Migrations are deliberately NOT part of any deploy.
+  #
+  # TASK-01: "Database migrations run as a gated, reviewed step — never
+  # auto-apply destructive changes on deploy." The runner in packages/db
+  # refuses destructive statements without an explicit flag; run it by hand.
+  # See docs/runbooks/migrations.md.

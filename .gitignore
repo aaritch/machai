@@ -1,0 +1,37 @@
+# dependencies
+node_modules/
+.pnpm-store/
+
+# build output (note: /build holds the planning docs and IS tracked)
+.next/
+out/
+dist/
+*.tsbuildinfo
+
+# turbo
+.turbo/
+
+# env — never commit real secrets (.env.example is the documented, safe template)
+.env
+.env.*
+!.env.example
+
+# test / coverage
+coverage/
+.vitest/
+
+# editors & os
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# local artifacts
+tmp/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# vercel
+.vercel/

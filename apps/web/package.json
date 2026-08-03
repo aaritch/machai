@@ -1,0 +1,41 @@
+{
+  "name": "@machai/web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint src",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@machai/billing": "workspace:*",
+    "@machai/billing-sync": "workspace:*",
+    "@machai/bureau-clients": "workspace:*",
+    "@machai/config": "workspace:*",
+    "@machai/db": "workspace:*",
+    "@machai/emails": "workspace:*",
+    "@machai/entitlements": "workspace:*",
+    "@machai/kyb": "workspace:*",
+    "@machai/observability": "workspace:*",
+    "@machai/queue": "workspace:*",
+    "@machai/storage": "workspace:*",
+    "@machai/types": "workspace:*",
+    "@machai/ui": "workspace:*",
+    "bcryptjs": "^2.4.3",
+    "next": "^15.1.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "server-only": "^0.0.1",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.0.0",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/react": "^19.0.4",
+    "@types/react-dom": "^19.0.2",
+    "tailwindcss": "^4.0.0"
+  }
+}

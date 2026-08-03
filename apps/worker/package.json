@@ -1,0 +1,32 @@
+{
+  "name": "@machai/worker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "start": "tsx src/index.ts",
+    "lint": "eslint src",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@machai/billing": "workspace:*",
+    "@machai/billing-sync": "workspace:*",
+    "@machai/bureau-clients": "workspace:*",
+    "@machai/config": "workspace:*",
+    "@machai/db": "workspace:*",
+    "@machai/emails": "workspace:*",
+    "@machai/entitlements": "workspace:*",
+    "@machai/kyb": "workspace:*",
+    "@machai/observability": "workspace:*",
+    "@machai/queue": "workspace:*",
+    "@machai/storage": "workspace:*",
+    "@machai/types": "workspace:*",
+    "pdfkit": "^0.15.2",
+    "tsx": "^4.19.2"
+  },
+  "devDependencies": {
+    "@types/pdfkit": "^0.13.8"
+  }
+}
