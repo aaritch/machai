@@ -1,4 +1,4 @@
-﻿import { and, eq, getDb, jobs, sql } from '@machai/db';
+﻿import { and, eq, getDb, jobs, lt, sql } from '@machai/db';
 import type { EnqueueOptions, QueueName } from '@machai/types';
 import { backoffMs, type JobProducer } from './driver';
 
@@ -138,7 +138,11 @@ export class PostgresQueueDriver implements JobProducer {
     const reclaimed = await getDb()
       .update(jobs)
       .set({ status: 'pending', lockedAt: null, lockedBy: null })
-      .where(and(eq(jobs.status, 'running'), sql`${jobs.lockedAt} < ${cutoff}`))
+      // `lt` rather than a raw sql template: interpolating a Date into `sql`
+      // passes it as an untyped parameter that postgres-js cannot encode, which
+      // threw ERR_INVALID_ARG_TYPE on every run. The comparator carries the
+      // column's timestamp type, so the value is encoded correctly.
+      .where(and(eq(jobs.status, 'running'), lt(jobs.lockedAt, cutoff)))
       .returning({ id: jobs.id });
     return reclaimed.length;
   }
