@@ -6,3 +6,4 @@ export * from './engagement';
 export * from './support';
 export * from './audit';
 export * from './jobs';
+export * from './affiliate';

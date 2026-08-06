@@ -33,6 +33,7 @@ export function SiteFooter({
               { href: '/pricing', label: 'Pricing' },
               { href: '/learn', label: 'About business credit' },
               { href: '/help', label: 'Help center' },
+              { href: '/affiliates', label: 'Affiliate program' },
               { href: '/signup', label: 'Create an account' },
             ]}
           />

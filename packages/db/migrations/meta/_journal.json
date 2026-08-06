@@ -8,6 +8,13 @@
       "when": 1785791061491,
       "tag": "0000_gray_goblin_queen",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1786039091984,
+      "tag": "0001_bizarre_grey_gargoyle",
+      "breakpoints": true
     }
   ]
 }

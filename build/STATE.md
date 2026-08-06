@@ -65,6 +65,7 @@ Build order follows dependencies. Do not start a task until every task in its De
 | TASK-06 | Bureau furnishing pipeline (Direction B) | 4 | TASK-05 + legal and bureau approval | BLOCKED — not started, by design | |
 | TASK-07 | Engagement: checklist, achievements, support, marketplace | 1-3 | TASK-02 | IN REVIEW | |
 | TASK-08 | Security, compliance, observability (cross-cutting) | all | TASK-01 | IN PROGRESS (ongoing) | |
+| Phase 5 | Affiliate program (partial — enrolment, attribution, commissions) | 5 | TASK-02, TASK-04 | IN REVIEW | |
 
 Nothing is DONE. "IN REVIEW" here means code complete against the task file's
 Implementation details, with tests passing — but the Definition of done in
@@ -310,6 +311,24 @@ One block per task. Keep the Notes current; this is where resume-context lives. 
 
 Append one line per working session. Newest at the top.
 
+- 2026-08-06 — Affiliate program (spec §1.3, Phase 5, partial). $10 commission
+  earned on a referred account converting to a PAID plan — never on a free
+  signup, since signup is free and collects an EIN, which would have funded the
+  fabrication vector §6.4 warns about. Qualification fires from the billing
+  mirror on the transition into `active` (not `trialing`), so a commission can
+  only attach to revenue that arrived. 30-day hold covers refunds and disputes;
+  cancellation inside the hold reverses. Self-referral blocked by account and by
+  address; one attribution per referred user enforced by unique index; velocity
+  and duplicate-EIN patterns flag for staff review. Payout details are an email
+  address only — no bank or card data. New: packages/affiliate, three tables,
+  /affiliates, /dashboard/affiliate, referral capture in middleware, a
+  hold-release job on the worker. 12 tests added (118 total).
+  Payout issuing itself is NOT built — balances accrue and are settled
+  externally. Nothing tunes the program in the UI yet; AFFILIATE_PROGRAM in
+  packages/config is the single place.
+- 2026-08-06 — Applied the Nocturne dark restyle from the supplied brand
+  direction. Fixed reclaimStalled, which had been throwing on every scheduled
+  run and never returning stalled jobs to the queue.
 - 2026-08-03 — Initial build. Monorepo scaffolded (TASK-01); marketing site,
   help center, and legal placeholders (TASK-03); auth and the three-step wizard
   (TASK-02); Stripe billing with signature-verified idempotent webhooks

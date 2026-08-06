@@ -57,6 +57,7 @@ const nextConfig: NextConfig = {
   // Workspace packages ship TypeScript source rather than a build step, so Next
   // compiles them alongside app code. One fewer build artifact to keep in sync.
   transpilePackages: [
+    '@machai/affiliate',
     '@machai/billing',
     '@machai/billing-sync',
     '@machai/bureau-clients',

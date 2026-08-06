@@ -44,6 +44,7 @@ const NAV_GROUPS: { title: string; items: NavItem[] }[] = [
     title: 'Account',
     items: [
       { href: '/dashboard/billing', label: 'Subscriptions & billing' },
+      { href: '/dashboard/affiliate', label: 'Affiliate program' },
       { href: '/dashboard/company', label: 'Company info' },
       { href: '/dashboard/tickets', label: 'Support tickets' },
       { href: '/dashboard/feedback', label: 'Feedback' },

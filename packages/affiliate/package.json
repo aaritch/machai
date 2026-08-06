@@ -1,5 +1,5 @@
 {
-  "name": "@machai/config",
+  "name": "@machai/affiliate",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -7,14 +7,6 @@
     ".": {
       "types": "./src/index.ts",
       "default": "./src/index.ts"
-    },
-    "./public": {
-      "types": "./src/public.ts",
-      "default": "./src/public.ts"
-    },
-    "./affiliate": {
-      "types": "./src/affiliate.ts",
-      "default": "./src/affiliate.ts"
     }
   },
   "scripts": {
@@ -23,7 +15,9 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@machai/types": "workspace:*",
-    "zod": "^3.24.1"
+    "@machai/config": "workspace:*",
+    "@machai/db": "workspace:*",
+    "@machai/observability": "workspace:*",
+    "@machai/types": "workspace:*"
   }
 }

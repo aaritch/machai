@@ -1,3 +1,4 @@
+import { promoteHeldReferrals } from '@machai/affiliate';
 import { logger } from '@machai/observability';
 import { PostgresQueueDriver, enqueue } from '@machai/queue';
 import { QUEUE_NAMES } from '@machai/types';
@@ -44,6 +45,17 @@ export const TASKS: ScheduledTask[] = [
           );
         }
       }
+    },
+  },
+  {
+    name: 'release-affiliate-holds',
+    // Daily. Moves qualified referrals whose hold has elapsed to `payable`.
+    // Flagged referrals are skipped by design — they need a staff decision.
+    intervalMs: 24 * HOUR,
+    initialDelayMs: 3 * 60_000,
+    run: async () => {
+      const promoted = await promoteHeldReferrals();
+      if (promoted > 0) logger.info('affiliate holds released', { count: promoted });
     },
   },
   {

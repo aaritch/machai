@@ -17,6 +17,7 @@ import {
   type InvoiceMirror,
   type SubscriptionMirror,
 } from '@machai/billing';
+import { qualifyReferralForUser, reverseReferralForUser } from '@machai/affiliate';
 import { AUDIT_ACTIONS, logger } from '@machai/observability';
 import { EMAIL_TEMPLATES, QUEUE_NAMES, type SubscriptionStatus } from '@machai/types';
 
@@ -124,6 +125,21 @@ async function upsertSubscription(data: SubscriptionMirror, deps: SyncDeps): Pro
   // Notify only on the transition INTO an active state, not on every update —
   // Stripe emits several updates per billing cycle.
   const becameActive = data.status === 'active' && previous !== 'active';
+
+  /**
+   * The affiliate commission is earned HERE and nowhere else.
+   *
+   * `active` specifically — not `trialing`, which is entitling but has taken no
+   * money yet, and not the free tier, which has no subscription row at all. So
+   * a commission can only ever be attached once revenue has actually arrived.
+   *
+   * `qualifyReferralForUser` is idempotent and swallows its own errors: a
+   * referral problem must never fail a billing update.
+   */
+  if (becameActive) {
+    await qualifyReferralForUser(userId);
+  }
+
   if (becameActive && deps.enqueue && planId) {
     const [plan] = await db.select({ name: plans.name }).from(plans).where(eq(plans.id, planId)).limit(1);
     const [user] = await db.select({ email: users.email }).from(users).where(eq(users.id, userId)).limit(1);
@@ -138,10 +154,19 @@ async function upsertSubscription(data: SubscriptionMirror, deps: SyncDeps): Pro
 }
 
 async function markSubscriptionCanceled(stripeSubscriptionId: string): Promise<void> {
-  await getDb()
+  const canceled = await getDb()
     .update(subscriptions)
     .set({ status: 'canceled', canceledAt: new Date(), syncedAt: new Date(), updatedAt: new Date() })
-    .where(eq(subscriptions.stripeSubscriptionId, stripeSubscriptionId));
+    .where(eq(subscriptions.stripeSubscriptionId, stripeSubscriptionId))
+    .returning({ userId: subscriptions.userId });
+
+  // A subscription that ends before its commission is payable was not really a
+  // conversion. Only unpaid referrals are reversed; settled money is not clawed
+  // back automatically.
+  const userId = canceled[0]?.userId;
+  if (userId) {
+    await reverseReferralForUser(userId, 'Referred subscription ended before the hold elapsed');
+  }
 }
 
 async function upsertInvoice(data: InvoiceMirror): Promise<void> {

@@ -222,6 +222,21 @@ export async function completeSignup(_prev: FormState, formData: FormData): Prom
       metadata: { businessId: created.businessId },
     });
 
+    // Referral attribution. Recorded as `pending` and worth nothing until the
+    // account converts to a paid plan; `recordReferralAtSignup` never throws,
+    // because a referral bug must not cost us the signup.
+    const { cookies } = await import('next/headers');
+    const { REFERRAL_COOKIE } = await import('@machai/config/affiliate');
+    const { recordReferralAtSignup } = await import('@machai/affiliate');
+    const cookieStore = await cookies();
+    await recordReferralAtSignup({
+      code: cookieStore.get(REFERRAL_COOKIE)?.value,
+      referredUserId: created.userId,
+      referredEmail: email,
+      einFingerprint: fingerprintField(einNormalized),
+    });
+    cookieStore.delete(REFERRAL_COOKIE);
+
     await sendVerificationEmail(created.userId, email);
     await seedUserChecklist(created.userId);
     // KYB starts immediately; the business sits in `pending` and bureau

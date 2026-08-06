@@ -58,6 +58,18 @@ export const AUDIT_ACTIONS = {
   ENTITLEMENT_CHECK_FAILED: 'authz.entitlement.failed',
   ROLE_CHECK_FAILED: 'authz.role.failed',
 
+  // Affiliate program — every money-affecting transition is recorded
+  AFFILIATE_APPLIED: 'affiliate.applied',
+  AFFILIATE_APPROVED: 'affiliate.approved',
+  AFFILIATE_SUSPENDED: 'affiliate.suspended',
+  REFERRAL_RECORDED: 'affiliate.referral.recorded',
+  REFERRAL_REJECTED: 'affiliate.referral.rejected',
+  REFERRAL_FLAGGED: 'affiliate.referral.flagged',
+  REFERRAL_QUALIFIED: 'affiliate.referral.qualified',
+  REFERRAL_BECAME_PAYABLE: 'affiliate.referral.payable',
+  REFERRAL_REVERSED: 'affiliate.referral.reversed',
+  AFFILIATE_PAYOUT_ISSUED: 'affiliate.payout.issued',
+
   // Admin
   ADMIN_USER_VIEWED: 'admin.user.viewed',
   ADMIN_USER_UPDATED: 'admin.user.updated',
