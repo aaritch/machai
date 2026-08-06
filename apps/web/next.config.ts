@@ -1,4 +1,16 @@
 import type { NextConfig } from 'next';
+import { loadEnvFile } from '@machai/config';
+
+/**
+ * Next loads `.env` relative to the app directory, but in a monorepo the file
+ * lives at the repository root so the worker and the migration scripts share
+ * it. This config is evaluated in Node before compilation, which makes it the
+ * right place to pull that file in.
+ *
+ * Anything already in the environment wins, so a Vercel-managed variable is
+ * never overwritten by a developer's local file.
+ */
+loadEnvFile(import.meta.dirname);
 
 /**
  * Security headers (TASK-08 app-sec baseline).

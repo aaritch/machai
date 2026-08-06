@@ -1,5 +1,9 @@
+import { loadEnvFile } from '@machai/config';
 import { closeDb } from '../client';
 import { seed } from '../seed/index';
+
+// Run under tsx, not Next, so the root .env has to be loaded explicitly.
+loadEnvFile();
 
 /** `pnpm db:seed` — idempotent, safe to re-run on any environment. */
 async function main() {

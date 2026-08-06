@@ -26,7 +26,9 @@ export default async function HomePage() {
   return (
     <>
       {/* Hero */}
-      <section className="border-b border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-950">
+      {/* No ground colour: PageBackdrop is fixed behind the page, so a section
+          that paints an opaque background would cover it. Border only. */}
+      <section className="border-b border-neutral-200 dark:border-neutral-800">
         <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:py-28">
           <div className="max-w-3xl">
             <Badge tone="accent">EIN only — no SSN required</Badge>
@@ -96,7 +98,7 @@ export default async function HomePage() {
       </section>
 
       {/* Bureau strip — every claim here is config-gated (spec §12.4) */}
-      <section className="border-y border-neutral-200 bg-white py-16 dark:border-neutral-800 dark:bg-neutral-950">
+      <section className="border-y border-neutral-200 py-16 dark:border-neutral-800">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <h2 className="text-center text-2xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-50">
             The bureaus we work with
@@ -185,7 +187,7 @@ export default async function HomePage() {
       </section>
 
       {/* Plan teaser */}
-      <section className="border-t border-neutral-200 bg-white py-20 dark:border-neutral-800 dark:bg-neutral-950">
+      <section className="border-t border-neutral-200 py-20 dark:border-neutral-800">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <h2 className="text-3xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-50">

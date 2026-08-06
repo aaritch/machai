@@ -2,8 +2,8 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { brand } from '@machai/config/public';
 import { Button, LinkButton, cn } from '@machai/ui';
+import { LogoLockup } from '@/components/brand/logo';
 
 /**
  * Sticky marketing nav (spec §5.1).
@@ -25,24 +25,19 @@ const LEARN_LINKS = [
   { href: '/help/getting-started', label: 'Getting started guide' },
 ];
 
+const navLink =
+  'rounded-lg px-3 py-2 text-sm font-medium text-neutral-400 transition-colors hover:bg-neutral-900 hover:text-neutral-100';
+
 export function SiteHeader({ signedIn }: { signedIn: boolean }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openMenu, setOpenMenu] = useState<'company' | 'learn' | null>(null);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-neutral-200 bg-white/90 backdrop-blur dark:border-neutral-800 dark:bg-neutral-950/90">
+    <header className="sticky top-0 z-40 border-b border-neutral-800/80 bg-neutral-950/85 backdrop-blur">
       <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
-        <Link
-          href="/"
-          className="flex items-center gap-2 rounded font-semibold tracking-tight text-neutral-900 focus-visible:ring-2 focus-visible:ring-accent-500 dark:text-neutral-50"
-        >
-          <span
-            aria-hidden="true"
-            className="grid h-7 w-7 place-items-center rounded-lg bg-accent-700 text-sm font-bold text-white"
-          >
-            {brand.name.charAt(0)}
-          </span>
-          {brand.name}
+        <Link href="/" className="rounded focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent-500">
+          <LogoLockup markClassName="h-5" wordClassName="text-sm" />
+          <span className="sr-only">Machai — home</span>
         </Link>
 
         <div className="hidden items-center gap-1 md:flex">
@@ -60,10 +55,7 @@ export function SiteHeader({ signedIn }: { signedIn: boolean }) {
             onToggle={() => setOpenMenu(openMenu === 'learn' ? null : 'learn')}
             onClose={() => setOpenMenu(null)}
           />
-          <Link
-            href="/pricing"
-            className="rounded-lg px-3 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800"
-          >
+          <Link href="/pricing" className={navLink}>
             Pricing
           </Link>
         </div>
@@ -75,10 +67,7 @@ export function SiteHeader({ signedIn }: { signedIn: boolean }) {
             </LinkButton>
           ) : (
             <>
-              <Link
-                href="/login"
-                className="rounded-lg px-3 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800"
-              >
+              <Link href="/login" className={navLink}>
                 Log in
               </Link>
               <LinkButton href="/signup" size="sm">
@@ -108,20 +97,17 @@ export function SiteHeader({ signedIn }: { signedIn: boolean }) {
       </nav>
 
       {mobileOpen ? (
-        <div
-          id="mobile-nav"
-          className="border-t border-neutral-200 bg-white px-4 py-4 md:hidden dark:border-neutral-800 dark:bg-neutral-950"
-        >
+        <div id="mobile-nav" className="border-t border-neutral-800 bg-neutral-950 px-4 py-4 md:hidden">
           <MobileGroup label="Company" links={COMPANY_LINKS} onNavigate={() => setMobileOpen(false)} />
           <MobileGroup label="Learn" links={LEARN_LINKS} onNavigate={() => setMobileOpen(false)} />
           <Link
             href="/pricing"
             onClick={() => setMobileOpen(false)}
-            className="block rounded-lg px-3 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-300"
+            className="block rounded-lg px-3 py-2 text-sm font-medium text-neutral-300"
           >
             Pricing
           </Link>
-          <div className="mt-3 flex flex-col gap-2 border-t border-neutral-200 pt-3 dark:border-neutral-800">
+          <div className="mt-3 flex flex-col gap-2 border-t border-neutral-800 pt-3">
             {signedIn ? (
               <LinkButton href="/dashboard" fullWidth>
                 Dashboard
@@ -158,12 +144,7 @@ function DropdownNav({
 }) {
   return (
     <div className="relative" onMouseLeave={onClose}>
-      <button
-        type="button"
-        aria-expanded={open}
-        onClick={onToggle}
-        className="flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800"
-      >
+      <button type="button" aria-expanded={open} onClick={onToggle} className={cn(navLink, 'flex items-center gap-1')}>
         {label}
         <svg
           viewBox="0 0 20 20"
@@ -177,13 +158,13 @@ function DropdownNav({
         </svg>
       </button>
       {open ? (
-        <div className="absolute left-0 top-full w-60 rounded-xl border border-neutral-200 bg-white p-1.5 shadow-lg dark:border-neutral-800 dark:bg-neutral-900">
+        <div className="absolute left-0 top-full w-60 rounded-lg border border-neutral-700 bg-neutral-900 p-1.5 shadow-[0_16px_40px_rgba(0,0,0,0.65)]">
           {links.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               onClick={onClose}
-              className="block rounded-lg px-3 py-2 text-sm text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800"
+              className="block rounded-lg px-3 py-2 text-sm text-neutral-300 hover:bg-neutral-800 hover:text-neutral-100"
             >
               {link.label}
             </Link>
@@ -205,15 +186,13 @@ function MobileGroup({
 }) {
   return (
     <div className="mb-2">
-      <p className="px-3 pb-1 text-xs font-semibold uppercase tracking-wide text-neutral-500">
-        {label}
-      </p>
+      <p className="px-3 pb-1 text-xs font-medium uppercase tracking-[0.14em] text-neutral-600">{label}</p>
       {links.map((link) => (
         <Link
           key={link.href}
           href={link.href}
           onClick={onNavigate}
-          className="block rounded-lg px-3 py-2 text-sm text-neutral-700 dark:text-neutral-300"
+          className="block rounded-lg px-3 py-2 text-sm text-neutral-300"
         >
           {link.label}
         </Link>

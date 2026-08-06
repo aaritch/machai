@@ -1,8 +1,11 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { getConfig } from '@machai/config';
+import { getConfig, loadEnvFile } from '@machai/config';
 import postgres from 'postgres';
+
+// Run under tsx, not Next, so the root .env has to be loaded explicitly.
+loadEnvFile();
 
 /**
  * Migration runner.

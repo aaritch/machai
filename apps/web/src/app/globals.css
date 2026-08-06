@@ -2,48 +2,70 @@
 @source "../../../../packages/ui/src";
 
 /**
- * Design tokens.
+ * Design tokens — Nocturne.
  *
- * A single muted-green accent on a warm neutral scale, matching the reference
- * UI in spec §5. Both palettes are tuned so accent-700 on white and
- * accent-300 on neutral-950 clear WCAG AA for body text — the accent is used
- * for text as well as fills, so it has to pass at both ends.
+ * A near-neutral blue-grey dark ground with a single blurple accent. The site
+ * is dark by default: the `dark` variant is class-based and <html> carries
+ * `class="dark"`, so every existing `dark:` utility in the codebase is the
+ * live style and the light values below only serve print and forced-colors.
+ *
+ * Contrast: accent-300 on the ground clears AA for body text; the base accent
+ * (accent-500) is reserved for lines, borders, icons and large text, per the
+ * Nocturne guidance that accent-to-ground is tuned to 3:1.
  */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
-  --color-accent-50: oklch(0.968 0.021 152);
-  --color-accent-100: oklch(0.936 0.043 152);
-  --color-accent-200: oklch(0.878 0.072 152);
-  --color-accent-300: oklch(0.808 0.098 152);
-  --color-accent-400: oklch(0.724 0.114 152);
-  --color-accent-500: oklch(0.638 0.115 152);
-  --color-accent-600: oklch(0.552 0.103 152);
-  --color-accent-700: oklch(0.462 0.086 152);
-  --color-accent-800: oklch(0.386 0.071 152);
-  --color-accent-900: oklch(0.324 0.058 152);
-  --color-accent-950: oklch(0.222 0.041 152);
+  /* Blurple accent — OKLCH hue 289.2 */
+  --color-accent-50: #f9f8ff;
+  --color-accent-100: #f5f4ff;
+  --color-accent-200: #e7e5fe;
+  --color-accent-300: #d2cefd;
+  --color-accent-400: #b5abfc;
+  --color-accent-500: #968ae0;
+  --color-accent-600: #796cbf;
+  --color-accent-700: #5d5294;
+  --color-accent-800: #423a6a;
+  --color-accent-900: #2b2741;
+  --color-accent-950: #1d1a2d;
 
-  --color-neutral-50: oklch(0.985 0.002 120);
-  --color-neutral-100: oklch(0.968 0.003 120);
-  --color-neutral-200: oklch(0.925 0.004 120);
-  --color-neutral-300: oklch(0.868 0.005 120);
-  --color-neutral-400: oklch(0.708 0.006 120);
-  --color-neutral-500: oklch(0.566 0.006 120);
-  --color-neutral-600: oklch(0.452 0.006 120);
-  --color-neutral-700: oklch(0.376 0.006 120);
-  --color-neutral-800: oklch(0.278 0.005 120);
-  --color-neutral-900: oklch(0.212 0.005 120);
-  --color-neutral-950: oklch(0.148 0.004 120);
+  /* Desaturated blue-grey neutrals — 950 is the ground, 900 the surface */
+  --color-neutral-50: #f7f8ff;
+  --color-neutral-100: #f3f5fe;
+  --color-neutral-200: #e4e7f5;
+  --color-neutral-300: #cfd3e5;
+  --color-neutral-400: #b2b6ca;
+  --color-neutral-500: #9397ab;
+  --color-neutral-600: #75798c;
+  --color-neutral-700: #595d6c;
+  --color-neutral-800: #3f424d;
+  --color-neutral-900: #232532;
+  --color-neutral-950: #161826;
 
-  --font-sans:
-    ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  /* Deep-indigo field — saturation as presence. Full-bleed bands only,
+     never interface chrome. */
+  --color-section: #262a60;
+  --color-section-glow: #353b80;
+
+  --color-text: #e9e9ed;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.5rem;
+
+  /* Elevation on a dark ground is an edge plus ambient darkness, not a spread. */
+  --shadow-sm: 0 0 0 1px #3f424d;
+  --shadow-md: 0 0 0 1px #595d6c, 0 6px 18px rgb(0 0 0 / 0.55);
+  --shadow-lg: 0 0 0 1px #9397ab, 0 16px 40px rgb(0 0 0 / 0.65);
 }
 
 @layer base {
   html {
     scroll-behavior: smooth;
+    color-scheme: dark;
   }
 
-  /* Honour a user's reduced-motion preference everywhere, once. */
   @media (prefers-reduced-motion: reduce) {
     html {
       scroll-behavior: auto;
@@ -58,25 +80,37 @@
   }
 
   body {
-    @apply bg-neutral-50 text-neutral-900 antialiased;
+    @apply bg-neutral-950 text-neutral-100 antialiased;
   }
 
-  @media (prefers-color-scheme: dark) {
-    body {
-      @apply bg-neutral-950 text-neutral-100;
-    }
+  ::selection {
+    background: color-mix(in srgb, var(--color-accent-500) 30%, transparent);
   }
 
-  /* Keyboard users must always be able to see where they are. */
+  /* Keyboard focus is themed, never the browser default. */
   :focus-visible {
-    outline: none;
+    outline: 2px solid var(--color-accent-500);
+    outline-offset: 2px;
   }
 }
 
 @layer components {
-  /* Skip link — visually hidden until focused. */
   .skip-link {
     @apply sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50
-      focus:rounded-lg focus:bg-accent-700 focus:px-4 focus:py-2 focus:text-white;
+      focus:rounded-lg focus:border focus:border-accent-500 focus:bg-neutral-950 focus:px-4
+      focus:py-2 focus:text-accent-200;
+  }
+
+  /* Nocturne rules fade out at their ends rather than stopping cleanly. */
+  .rule-fade {
+    height: 1px;
+    border: 0;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--color-neutral-800) 48px,
+      var(--color-neutral-800) calc(100% - 48px),
+      transparent
+    );
   }
 }

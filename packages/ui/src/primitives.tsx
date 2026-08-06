@@ -10,20 +10,22 @@ import type {
 import { cn } from './cn';
 
 /**
- * Design-system primitives.
+ * Design-system primitives — Nocturne.
  *
- * Card-based, generous whitespace, a single muted-green accent — matching the
- * reference UI described in spec §5. Colour, focus, and spacing decisions live
- * here so every screen inherits them rather than re-deciding.
+ * A near-neutral blue-grey ground, 8px radii, and an accent used as a line and
+ * a glow rather than a flood: the primary action is an accent outline on
+ * transparent, never a filled block. Elevation on a dark ground is a hairline
+ * edge plus ambient darkness, so surfaces carry a border, not a spread shadow.
  *
- * Accessibility is built into the primitives, not bolted on per screen
- * (WCAG AA is a cross-cutting requirement in the project plan): every
- * interactive element has a visible focus ring, disabled states carry
- * `aria-disabled`, and error text is wired to its input via `aria-describedby`.
+ * Accessibility is built in rather than bolted on per screen: focus is the
+ * themed 2px accent ring, disabled states carry `aria-disabled`, and error
+ * text is wired to its input via `aria-describedby`. Accent-to-ground is
+ * tuned to 3:1 — good for chrome and large text — so accent body copy uses
+ * accent-200/300, never the base accent.
  */
 
 const focusRing =
-  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-neutral-950';
+  'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-500';
 
 // --- Button -----------------------------------------------------------------
 
@@ -31,13 +33,15 @@ type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
 type ButtonSize = 'sm' | 'md' | 'lg';
 
 const BUTTON_VARIANTS: Record<ButtonVariant, string> = {
+  // Outlined, not filled — the accent is a line here.
   primary:
-    'bg-accent-700 text-white hover:bg-accent-800 active:bg-accent-900 disabled:bg-accent-700/50',
+    'border border-accent-500 bg-transparent text-accent-200 hover:bg-accent-500/12 active:bg-accent-500/20 disabled:border-accent-800 disabled:text-accent-700',
   secondary:
-    'bg-white text-neutral-900 ring-1 ring-inset ring-neutral-300 hover:bg-neutral-50 disabled:text-neutral-400 dark:bg-neutral-900 dark:text-neutral-100 dark:ring-neutral-700 dark:hover:bg-neutral-800',
+    'border border-neutral-800 bg-neutral-900 text-neutral-100 hover:border-neutral-700 hover:bg-neutral-800 active:bg-neutral-900 disabled:text-neutral-600',
   ghost:
-    'bg-transparent text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800',
-  danger: 'bg-red-600 text-white hover:bg-red-700 disabled:bg-red-600/50',
+    'border border-transparent bg-transparent text-neutral-300 hover:bg-neutral-800 active:bg-neutral-900',
+  danger:
+    'border border-red-500/70 bg-red-500/10 text-red-200 hover:bg-red-500/20 active:bg-red-500/25 disabled:opacity-45',
 };
 
 const BUTTON_SIZES: Record<ButtonSize, string> = {
@@ -66,8 +70,8 @@ export function Button({
       disabled={disabled}
       aria-disabled={disabled || undefined}
       className={cn(
-        'inline-flex items-center justify-center gap-2 rounded-lg font-semibold transition-colors',
-        'disabled:cursor-not-allowed',
+        'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg font-medium transition-colors',
+        'disabled:cursor-not-allowed disabled:opacity-45',
         focusRing,
         BUTTON_VARIANTS[variant],
         BUTTON_SIZES[size],
@@ -95,7 +99,7 @@ export function LinkButton({
     <a
       {...props}
       className={cn(
-        'inline-flex items-center justify-center gap-2 rounded-lg font-semibold transition-colors',
+        'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg font-medium transition-colors',
         focusRing,
         BUTTON_VARIANTS[variant],
         BUTTON_SIZES[size],
@@ -112,11 +116,7 @@ export function Card({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
   return (
     <div
       {...props}
-      className={cn(
-        'rounded-xl border border-neutral-200 bg-white shadow-sm',
-        'dark:border-neutral-800 dark:bg-neutral-900',
-        className,
-      )}
+      className={cn('rounded-lg border border-neutral-800 bg-neutral-900', className)}
     />
   );
 }
@@ -135,15 +135,13 @@ export function CardHeader({
   return (
     <div
       className={cn(
-        'flex flex-wrap items-start justify-between gap-3 border-b border-neutral-200 px-5 py-4 dark:border-neutral-800',
+        'flex flex-wrap items-start justify-between gap-3 border-b border-neutral-800 px-5 py-4',
         className,
       )}
     >
       <div className="min-w-0">
-        <h2 className="text-base font-semibold text-neutral-900 dark:text-neutral-50">{title}</h2>
-        {description ? (
-          <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-400">{description}</p>
-        ) : null}
+        <h2 className="text-base font-medium text-neutral-100">{title}</h2>
+        {description ? <p className="mt-1 text-sm text-neutral-400">{description}</p> : null}
       </div>
       {action ? <div className="shrink-0">{action}</div> : null}
     </div>
@@ -158,13 +156,14 @@ export function CardBody({ className, ...props }: HTMLAttributes<HTMLDivElement>
 
 type BadgeTone = 'neutral' | 'accent' | 'success' | 'warning' | 'danger' | 'info';
 
+// Tinted from the dark steps of each ramp, with light text on the tint.
 const BADGE_TONES: Record<BadgeTone, string> = {
-  neutral: 'bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300',
-  accent: 'bg-accent-50 text-accent-800 dark:bg-accent-900/40 dark:text-accent-200',
-  success: 'bg-emerald-50 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200',
-  warning: 'bg-amber-50 text-amber-900 dark:bg-amber-900/40 dark:text-amber-200',
-  danger: 'bg-red-50 text-red-800 dark:bg-red-900/40 dark:text-red-200',
-  info: 'bg-sky-50 text-sky-800 dark:bg-sky-900/40 dark:text-sky-200',
+  neutral: 'bg-neutral-800 text-neutral-300',
+  accent: 'bg-accent-900 text-accent-200 ring-1 ring-inset ring-accent-800',
+  success: 'bg-emerald-950 text-emerald-200 ring-1 ring-inset ring-emerald-900',
+  warning: 'bg-amber-950 text-amber-200 ring-1 ring-inset ring-amber-900',
+  danger: 'bg-red-950 text-red-200 ring-1 ring-inset ring-red-900',
+  info: 'bg-sky-950 text-sky-200 ring-1 ring-inset ring-sky-900',
 };
 
 export function Badge({
@@ -176,7 +175,7 @@ export function Badge({
     <span
       {...props}
       className={cn(
-        'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium',
+        'inline-flex items-center whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs font-medium',
         BADGE_TONES[tone],
         className,
       )}
@@ -189,13 +188,10 @@ export function Badge({
 type AlertTone = 'info' | 'success' | 'warning' | 'danger';
 
 const ALERT_TONES: Record<AlertTone, string> = {
-  info: 'border-sky-200 bg-sky-50 text-sky-900 dark:border-sky-900 dark:bg-sky-950 dark:text-sky-100',
-  success:
-    'border-emerald-200 bg-emerald-50 text-emerald-900 dark:border-emerald-900 dark:bg-emerald-950 dark:text-emerald-100',
-  warning:
-    'border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100',
-  danger:
-    'border-red-200 bg-red-50 text-red-900 dark:border-red-900 dark:bg-red-950 dark:text-red-100',
+  info: 'border-sky-900 bg-sky-950/60 text-sky-100',
+  success: 'border-emerald-900 bg-emerald-950/60 text-emerald-100',
+  warning: 'border-amber-900 bg-amber-950/60 text-amber-100',
+  danger: 'border-red-900 bg-red-950/60 text-red-100',
 };
 
 export function Alert({
@@ -213,13 +209,12 @@ export function Alert({
 }) {
   return (
     <div
-      // `alert` for anything the user must act on; polite status otherwise.
       role={tone === 'danger' ? 'alert' : 'status'}
       className={cn('rounded-lg border px-4 py-3 text-sm', ALERT_TONES[tone], className)}
     >
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
-          {title ? <p className="font-semibold">{title}</p> : null}
+          {title ? <p className="font-medium">{title}</p> : null}
           {children ? <div className={cn(title && 'mt-1', 'leading-relaxed')}>{children}</div> : null}
         </div>
         {action ? <div className="shrink-0">{action}</div> : null}
@@ -231,7 +226,7 @@ export function Alert({
 // --- Form fields ------------------------------------------------------------
 
 const controlBase =
-  'w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 placeholder:text-neutral-400 disabled:bg-neutral-50 disabled:text-neutral-500 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100';
+  'w-full rounded-lg border border-neutral-800 bg-neutral-950 px-3 py-2 text-sm text-neutral-100 placeholder:text-neutral-600 hover:border-neutral-700 disabled:opacity-45';
 
 export interface FieldProps {
   label: string;
@@ -246,22 +241,22 @@ export interface FieldProps {
 export function Field({ label, htmlFor, error, hint, required, children, className }: FieldProps) {
   return (
     <div className={cn('space-y-1.5', className)}>
-      <label htmlFor={htmlFor} className="block text-sm font-medium text-neutral-800 dark:text-neutral-200">
+      <label htmlFor={htmlFor} className="block text-sm font-medium text-neutral-200">
         {label}
         {required ? (
-          <span className="ml-0.5 text-red-600" aria-hidden="true">
+          <span className="ml-0.5 text-red-400" aria-hidden="true">
             *
           </span>
         ) : null}
       </label>
       {children}
       {hint && !error ? (
-        <p id={`${htmlFor}-hint`} className="text-xs text-neutral-500 dark:text-neutral-400">
+        <p id={`${htmlFor}-hint`} className="text-xs text-neutral-500">
           {hint}
         </p>
       ) : null}
       {error ? (
-        <p id={`${htmlFor}-error`} className="text-xs font-medium text-red-600 dark:text-red-400">
+        <p id={`${htmlFor}-error`} className="text-xs font-medium text-red-300">
           {error}
         </p>
       ) : null}
@@ -278,9 +273,7 @@ export function Input({
     <input
       {...props}
       aria-invalid={invalid || undefined}
-      aria-describedby={
-        props.id ? (invalid ? `${props.id}-error` : `${props.id}-hint`) : undefined
-      }
+      aria-describedby={props.id ? (invalid ? `${props.id}-error` : `${props.id}-hint`) : undefined}
       className={cn(controlBase, focusRing, invalid && 'border-red-500', className)}
     />
   );
@@ -295,9 +288,7 @@ export function Textarea({
     <textarea
       {...props}
       aria-invalid={invalid || undefined}
-      aria-describedby={
-        props.id ? (invalid ? `${props.id}-error` : `${props.id}-hint`) : undefined
-      }
+      aria-describedby={props.id ? (invalid ? `${props.id}-error` : `${props.id}-hint`) : undefined}
       className={cn(controlBase, focusRing, 'min-h-28 resize-y', invalid && 'border-red-500', className)}
     />
   );
@@ -332,15 +323,15 @@ export function Checkbox({
           id={id}
           type="checkbox"
           className={cn(
-            'mt-0.5 h-4 w-4 shrink-0 rounded border-neutral-300 text-accent-700 dark:border-neutral-600 dark:bg-neutral-900',
+            'mt-0.5 h-4 w-4 shrink-0 rounded border-neutral-700 bg-neutral-950 text-accent-500',
             focusRing,
           )}
         />
-        <label htmlFor={id} className="text-sm leading-relaxed text-neutral-700 dark:text-neutral-300">
+        <label htmlFor={id} className="text-sm leading-relaxed text-neutral-300">
           {label}
         </label>
       </div>
-      {error ? <p className="ml-6.5 text-xs font-medium text-red-600">{error}</p> : null}
+      {error ? <p className="ml-6.5 text-xs font-medium text-red-300">{error}</p> : null}
     </div>
   );
 }
@@ -360,11 +351,9 @@ export function EmptyState({
 }) {
   return (
     <div className={cn('px-5 py-12 text-center', className)}>
-      <h3 className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">{title}</h3>
+      <h3 className="text-sm font-medium text-neutral-100">{title}</h3>
       {description ? (
-        <p className="mx-auto mt-1.5 max-w-md text-sm text-neutral-600 dark:text-neutral-400">
-          {description}
-        </p>
+        <p className="mx-auto mt-1.5 max-w-md text-sm text-neutral-400">{description}</p>
       ) : null}
       {action ? <div className="mt-5">{action}</div> : null}
     </div>
@@ -383,25 +372,22 @@ export function StatTile({
   tone?: 'neutral' | 'accent';
 }) {
   return (
-    <div className="rounded-xl border border-neutral-200 bg-white px-4 py-3.5 dark:border-neutral-800 dark:bg-neutral-900">
-      <p className="text-xs font-medium uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
-        {label}
-      </p>
+    <div className="rounded-lg border border-neutral-800 bg-neutral-900 px-4 py-3.5">
+      <p className="text-xs font-medium uppercase tracking-wide text-neutral-500">{label}</p>
       <p
         className={cn(
-          'mt-1.5 text-2xl font-semibold tabular-nums',
-          tone === 'accent'
-            ? 'text-accent-700 dark:text-accent-300'
-            : 'text-neutral-900 dark:text-neutral-50',
+          'mt-1.5 text-2xl font-medium tabular-nums',
+          tone === 'accent' ? 'text-accent-300' : 'text-neutral-50',
         )}
       >
         {value}
       </p>
-      {hint ? <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">{hint}</p> : null}
+      {hint ? <p className="mt-1 text-xs text-neutral-500">{hint}</p> : null}
     </div>
   );
 }
 
+/** A rule that fades to transparent at its ends rather than stopping cleanly. */
 export function Divider({ className }: { className?: string }) {
-  return <hr className={cn('border-neutral-200 dark:border-neutral-800', className)} />;
+  return <hr className={cn('rule-fade', className)} />;
 }

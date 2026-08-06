@@ -1,5 +1,5 @@
 import { createServer } from 'node:http';
-import { getConfig } from '@machai/config';
+import { getConfig, loadEnvFile } from '@machai/config';
 import { closeDb, isDatabaseConfigured } from '@machai/db';
 import { createLogger } from '@machai/observability';
 import { queueTransportName, startConsumer, type Consumer } from '@machai/queue';
@@ -20,6 +20,11 @@ import { startScheduler } from './scheduler/index';
  *
  * Deployed OFF Vercel — see the Dockerfile.
  */
+
+// The worker runs under tsx rather than Next, so the root .env — where one
+// exists, as in local development — has to be loaded explicitly. In a container
+// the environment comes from the platform and this is a no-op.
+loadEnvFile();
 
 const logger = createLogger({ service: 'worker' });
 
