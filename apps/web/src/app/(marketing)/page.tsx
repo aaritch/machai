@@ -112,9 +112,17 @@ export default async function HomePage() {
               'We name a bureau here only once it has approved us as a data furnisher.'}
           </p>
 
-          <div className="mt-10 grid gap-4 sm:grid-cols-3">
+          {/* Flex-wrap rather than a 3-column grid: with four bureaus the grid
+              left a lone card orphaned on the second row. Centring the wrap
+              keeps the trailing row balanced whatever the bureau count. */}
+          <div className="mt-10 flex flex-wrap justify-center gap-4">
             {bureaus.map((bureau) => (
-              <Card key={bureau.bureau}>
+              <Card
+                key={bureau.bureau}
+                // Widths track the gap so three sit per row on large screens
+                // and two on small, matching the previous grid.
+                className="w-full sm:w-[calc(50%-0.5rem)] lg:w-[calc(33.333%-0.667rem)]"
+              >
                 <CardBody className="p-5">
                   <p className="font-semibold text-neutral-900 dark:text-neutral-50">
                     {bureau.label}
