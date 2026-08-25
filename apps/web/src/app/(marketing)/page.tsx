@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import { getBureauCapabilities, getReportingClaim } from '@machai/config';
 import { brand, disclosures } from '@machai/config/public';
 import { formatPrice } from '@machai/config';
-import { Badge, Card, CardBody, LinkButton } from '@machai/ui';
+import { Card, CardBody, LinkButton } from '@machai/ui';
 import { getActivePlans } from '@/server/plans';
 
 export const metadata: Metadata = {
@@ -121,25 +121,15 @@ export default async function HomePage() {
             {bureaus.map((bureau) => (
               <Card key={bureau.bureau}>
                 <CardBody className="p-5">
-                  <div className="flex items-start justify-between gap-3">
-                    <p className="font-semibold text-neutral-900 dark:text-neutral-50">
-                      {bureau.label}
-                    </p>
-                    {/* Two states only. The former middle state branched on
-                        pullLive and read "Reports available", which claimed a
-                        capability we do not offer AND contradicted the body text
-                        below it whenever furnisher approval was absent. */}
-                    {/* "Reporting" rather than "Reporting live": we furnish data
-                        to this bureau, but a customer cannot view their file
-                        here, and "live" reads as live data access. */}
-                    {bureau.reportingLive ? (
-                      <Badge tone="success">Reporting</Badge>
-                    ) : (
-                      <Badge tone="neutral">Roadmap</Badge>
-                    )}
-                  </div>
-                  {/* Branches on reportingLive, not pullLive: this sentence makes a
-                      furnishing claim, so it must follow furnisher approval rather
+                  <p className="font-semibold text-neutral-900 dark:text-neutral-50">
+                    {bureau.label}
+                  </p>
+                  {/* No status badge: the sentence below already says whether we
+                      report to this bureau, and a badge repeating it added a
+                      second thing to keep in step with the flag.
+
+                      Still branches on reportingLive, not pullLive — this makes a
+                      furnishing claim, so it follows furnisher approval rather
                       than our ability to read the bureau's data. */}
                   <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
                     {bureau.reportingLive
