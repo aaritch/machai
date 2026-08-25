@@ -34,8 +34,7 @@ export default async function VerifyEmailPage({
                 Email confirmed
               </h1>
               <p className="mt-3 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-                Thanks — your address is verified. You can now choose a plan and pull your first
-                report.
+                Thanks — your address is verified. You can now choose a plan and start reporting.
               </p>
               <LinkButton href="/dashboard" size="lg" fullWidth className="mt-6">
                 Go to your dashboard

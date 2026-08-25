@@ -65,11 +65,16 @@ with a prorated charge; downgrades take effect at the start of the next billing 
 Cancellation stops future renewals and access continues to the end of the period already paid for.
 Fees already charged are not refundable except where required by law.
 
-## 5. Report pulls and permissible use
+## 5. Reporting to the bureaus
 
-Live report pulls are subject to each bureau's own terms and permissible-use rules, and to the
-monthly allowance of your plan. You may request reports only for a business you are authorised to
-act for.
+We submit your payment activity to the commercial bureaus your plan covers, on a monthly cycle,
+and only for a business you are authorised to act for. Each bureau decides independently what it
+accepts, how it presents it, and how it scores it. We do not control those decisions and cannot
+promise a score, a rating, or a funding outcome.
+
+You are responsible for the accuracy of the information you give us. If something we have reported
+is inaccurate, tell us and we will investigate and correct the record. You may also raise a dispute
+directly with the bureau, and that right is unaffected by anything in these terms.
 
 ## 6. Acceptable use
 

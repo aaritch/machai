@@ -112,7 +112,7 @@ export const CHECKLIST_ITEMS = [
     key: 'dispute_errors',
     title: 'Dispute anything inaccurate on your file',
     description:
-      'You have the right to have inaccurate information investigated. Start a dispute from the report screen.',
+      'You have the right to have inaccurate information investigated. Tell us and we will correct anything we reported.',
     category: 'habits',
     points: 10,
     displayOrder: 12,
@@ -154,23 +154,23 @@ export const ACHIEVEMENTS: Array<{
   {
     key: 'subscriber',
     title: 'Plan Active',
-    description: 'You activated a plan and unlocked live bureau data.',
+    description: 'You activated a plan and started reporting.',
     icon: 'sparkles',
     criteria: { type: 'subscription_active' },
     displayOrder: 4,
   },
   {
     key: 'first_pull',
-    title: 'First Look',
-    description: 'You pulled your first live credit report.',
+    title: 'First Submission',
+    description: 'Your activity was included in a monthly submission.',
     icon: 'file-search',
     criteria: { type: 'first_report_pulled' },
     displayOrder: 5,
   },
   {
     key: 'regular_reviewer',
-    title: 'Regular Reviewer',
-    description: 'You have pulled six reports.',
+    title: 'Six Cycles In',
+    description: 'You have been reported for six monthly cycles.',
     icon: 'calendar-check',
     criteria: { type: 'reports_pulled', count: 6 },
     displayOrder: 6,
@@ -248,7 +248,7 @@ export const FAQS = [
     displayOrder: 3,
   },
   {
-    question: 'Which bureaus can I pull a report from?',
+    question: 'Which bureaus do you report to?',
     answer:
       'Your plan determines your bureau coverage. Foundation includes one bureau of your choice; Growth and Premier include more. The bureaus currently available are listed on the pricing page and in your dashboard.',
     category: 'credit-reporting',
@@ -377,13 +377,13 @@ Checking your own report does not affect your score. Neither does paying a subsc
   },
   {
     slug: 'no-file-explained',
-    title: 'Your report says “no file” — what that means',
+    title: 'Why a bureau may have no file for you yet',
     excerpt: 'A missing file is a normal starting point, not an error.',
     category: 'credit-reporting',
     displayOrder: 3,
-    bodyMarkdown: `## "No file" is a starting point
+    bodyMarkdown: `## No file is a starting point
 
-When a pull returns *no file*, the bureau has no record of your business. For a company that has not yet bought on terms from a reporting supplier, that is the expected result — not a failure, and not something to dispute.
+If a bureau has no record of your business, that is the expected result for a company that has not yet bought on terms from a reporting supplier. It is not a failure, and not something to dispute.
 
 ## How a file gets created
 
@@ -391,13 +391,14 @@ A file is created when someone who extends you credit reports the account. That 
 
 - a supplier offering Net-30 terms who reports to a commercial bureau,
 - a business credit card issuer that reports commercially rather than personally,
-- a lender or equipment financer.
+- a lender or equipment financer,
+- or us, once your plan is active and your activity goes out in the monthly cycle.
 
 Not every supplier reports. Before opening an account, ask which bureaus they report to — it is a normal question, and the answer determines whether the account does anything for your file.
 
 ## What to do next
 
-Work through the foundation section of your credit checklist, then open one or two reporting trade accounts. Re-pull in 30–60 days. Files typically appear after the first reporting account cycles.`,
+Work through the foundation section of your credit checklist, then open one or two reporting trade accounts. Files typically appear after the first few reporting cycles, and each bureau decides for itself when it has enough history to score you.`,
   },
   {
     slug: 'billing-and-plans',
@@ -463,7 +464,7 @@ Your EIN is encrypted with a key unique to that record, which is itself wrapped 
 
 ## Access and audit
 
-Access to your data is limited to your own account. Staff access is role-restricted and requires multi-factor authentication. Sensitive actions — viewing an EIN, pulling a report, changing a plan — are written to an append-only audit trail that records who did what, and when, by reference rather than by value.
+Access to your data is limited to your own account. Staff access is role-restricted and requires multi-factor authentication. Sensitive actions — viewing an EIN, changing a plan, submitting a report — are written to an append-only audit trail that records who did what, and when, by reference rather than by value.
 
 ## Files
 

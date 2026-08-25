@@ -1,15 +1,13 @@
 import { promoteHeldReferrals } from '@machai/affiliate';
 import { logger } from '@machai/observability';
-import { PostgresQueueDriver, enqueue } from '@machai/queue';
-import { QUEUE_NAMES } from '@machai/types';
-import { findMonitoringTargets } from '../consumers/monitoring';
+import { PostgresQueueDriver } from '@machai/queue';
 
 /**
  * Scheduled work (spec §15.2).
  *
  * Vercel Cron can trigger a schedule, but the work itself belongs here — a
- * monitoring sweep across every account is not something to attempt inside a
- * function's time limit.
+ * sweep across every account is not something to attempt inside a function's
+ * time limit.
  *
  * Intervals rather than cron expressions: this is a long-lived process, the
  * cadences are coarse, and an interval needs no extra dependency. Each task
@@ -27,26 +25,6 @@ export interface ScheduledTask {
 }
 
 export const TASKS: ScheduledTask[] = [
-  {
-    name: 'monitoring-sweep',
-    // Daily. Which businesses are actually due is decided inside the task; the
-    // per-pull idempotency key stops the same file being pulled twice a day.
-    intervalMs: 24 * HOUR,
-    initialDelayMs: 2 * 60_000,
-    run: async () => {
-      const targets = await findMonitoringTargets();
-      logger.info('monitoring sweep starting', { businessCount: targets.length });
-      for (const target of targets) {
-        for (const bureau of target.bureaus) {
-          await enqueue(
-            QUEUE_NAMES.monitoring,
-            `monitoring:${target.businessId}:${bureau}:${new Date().toISOString().slice(0, 10)}`,
-            { businessId: target.businessId, bureau, reason: 'scheduled_refresh' },
-          );
-        }
-      }
-    },
-  },
   {
     name: 'release-affiliate-holds',
     // Daily. Moves qualified referrals whose hold has elapsed to `payable`.

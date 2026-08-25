@@ -33,8 +33,6 @@ const NAV_GROUPS: { title: string; items: NavItem[] }[] = [
   {
     title: 'Tools',
     items: [
-      { href: '/dashboard/score', label: 'Business credit score', requiresEntitlement: true },
-      { href: '/dashboard/progress', label: 'Credit progress', requiresEntitlement: true },
       { href: '/dashboard/tradelines', label: 'Tradeline tracker', badge: 'New' },
       { href: '/dashboard/checklist', label: 'Credit checklist' },
       { href: '/dashboard/marketplace', label: 'Marketplace' },

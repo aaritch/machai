@@ -43,8 +43,8 @@ export default async function HomePage() {
               Build credit in your business name, not against your personal score.
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-neutral-600 dark:text-neutral-300">
-              See your live business credit file, watch it change month over month, and work a
-              checklist that tells you what actually moves the number. Built around your EIN.
+              We report your payment activity to the commercial bureaus every month, so your
+              company builds a credit history of its own. Built around your EIN.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <LinkButton href="/signup" size="lg">
@@ -70,18 +70,18 @@ export default async function HomePage() {
           {[
             {
               n: 1,
-              title: 'Create your EIN-only account',
-              body: 'Add your business name, address, entity type, and EIN. No Social Security number, no card.',
+              title: 'Create your account',
+              body: 'Add your business name, address, entity type, and EIN. No card required to start.',
             },
             {
               n: 2,
-              title: 'Choose a plan and connect a bureau',
-              body: 'Pick the coverage you need and pull your live file to see where you actually stand today.',
+              title: 'Choose your coverage',
+              body: 'Pick which of the commercial bureaus we report your payment activity to.',
             },
             {
               n: 3,
-              title: 'Monitor and build, month over month',
-              body: 'Track your score, log your tradelines, work the checklist, and get alerted when something changes.',
+              title: 'We report, every month',
+              body: 'Your activity goes out on a monthly cycle, and your file builds from there. Each bureau decides how it scores what it receives.',
             },
           ].map((step) => (
             <Card key={step.n}>
@@ -129,8 +129,11 @@ export default async function HomePage() {
                         pullLive and read "Reports available", which claimed a
                         capability we do not offer AND contradicted the body text
                         below it whenever furnisher approval was absent. */}
+                    {/* "Reporting" rather than "Reporting live": we furnish data
+                        to this bureau, but a customer cannot view their file
+                        here, and "live" reads as live data access. */}
                     {bureau.reportingLive ? (
-                      <Badge tone="success">Reporting live</Badge>
+                      <Badge tone="success">Reporting</Badge>
                     ) : (
                       <Badge tone="neutral">Roadmap</Badge>
                     )}

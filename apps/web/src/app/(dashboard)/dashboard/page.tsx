@@ -1,10 +1,9 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { getReportingClaim } from '@machai/config';
+import { getBureauCapabilities, getReportingClaim } from '@machai/config';
 import { Badge, Card, CardBody, CardHeader, LinkButton, StatTile, cn } from '@machai/ui';
 import { getAccountContext } from '@/server/context';
 import { collectAchievementFacts, evaluateAchievements, getAchievements } from '@/server/checklist';
-import { getBureauCards } from '@/server/reports';
 
 export const metadata: Metadata = { title: 'Home' };
 
@@ -20,19 +19,20 @@ export default async function DashboardHomePage() {
     businessId: context.businessId,
     emailVerified: Boolean(context.user.emailVerifiedAt),
     kybVerified: context.business?.verificationStatus === 'verified',
-    subscriptionActive: context.entitlements.reportsPerMonth > 0,
+    subscriptionActive: context.entitlements.bureausReportedTo.length > 0,
     accountCreatedAt: new Date(),
   });
   await evaluateAchievements(context.user.id, facts);
 
-  const [achievements, bureauCards] = await Promise.all([
-    getAchievements(context.user.id),
-    getBureauCards(context.businessId, context.entitlements),
-  ]);
-
+  const achievements = await getAchievements(context.user.id);
   const earned = achievements.filter((a) => a.earned).length;
-  const connected = bureauCards.filter((c) => c.latest !== null);
   const claim = getReportingClaim();
+
+  // Bureaus this account is actually reported to: covered by the plan AND
+  // approved as a furnisher. Either alone is not enough to say so.
+  const reporting = getBureauCapabilities().filter(
+    (b) => b.reportingLive && context.entitlements.bureausReportedTo.includes(b.bureau),
+  );
 
   return (
     <div className="space-y-6">
@@ -67,17 +67,17 @@ export default async function DashboardHomePage() {
         </p>
       </div>
 
-      {/* Connect a bureau — the primary conversion action for free users. */}
-      {connected.length === 0 ? (
+      {/* Reporting status — the primary conversion action for free users. */}
+      {reporting.length === 0 ? (
         <Card>
           <CardBody className="flex flex-wrap items-center justify-between gap-4 p-6">
             <div className="max-w-xl">
               <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-50">
-                No bureaus are connected
+                Your activity is not being reported yet
               </h2>
               <p className="mt-1.5 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-                Pull your file to see where your business actually stands. A plan unlocks live
-                reports and monthly monitoring.
+                Choose a plan and we start including your payment activity in the monthly
+                submission to the bureaus it covers.
               </p>
               {claim.roadmapLine ? (
                 <p className="mt-2 text-xs text-neutral-500 dark:text-neutral-400">
@@ -85,23 +85,17 @@ export default async function DashboardHomePage() {
                 </p>
               ) : null}
             </div>
-            <LinkButton href={context.entitlements.reportsPerMonth > 0 ? '/dashboard/score' : '/dashboard/billing'}>
-              {context.entitlements.reportsPerMonth > 0 ? 'Pull a report' : 'Choose a plan'}
-            </LinkButton>
+            <LinkButton href="/dashboard/billing">Choose a plan</LinkButton>
           </CardBody>
         </Card>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {connected.map((card) => (
+          {reporting.map((bureau) => (
             <StatTile
-              key={card.bureau}
-              label={card.label}
-              value={card.latest?.score ?? (card.latest?.status === 'no_file' ? 'No file' : '—')}
-              hint={
-                card.latest?.pulledAt
-                  ? `${card.scoreScale} · pulled ${card.latest.pulledAt.toLocaleDateString()}`
-                  : card.scoreScale
-              }
+              key={bureau.bureau}
+              label={bureau.label}
+              value="Reporting"
+              hint="Included in the monthly submission"
               tone="accent"
             />
           ))}

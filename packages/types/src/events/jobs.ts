@@ -1,5 +1,3 @@
-import type { Bureau } from '../domain/enums';
-
 /**
  * Job payload shapes shared by producer (web) and consumer (worker).
  *
@@ -10,8 +8,6 @@ import type { Bureau } from '../domain/enums';
 
 export const QUEUE_NAMES = {
   stripeEvents: 'stripe-events',
-  reportPull: 'report-pull',
-  monitoring: 'monitoring',
   emails: 'emails',
   kyb: 'kyb',
   /** Registered but intentionally unimplemented until TASK-06 clears legal. */
@@ -23,24 +19,6 @@ export interface StripeEventJob {
   /** Stripe's event id — also the idempotency key. Stripe retries deliveries. */
   eventId: string;
   eventType: string;
-}
-
-export interface ReportPullJob {
-  businessId: string;
-  bureau: Bureau;
-  requestedByUserId: string;
-  /**
-   * `${businessId}:${bureau}:${YYYY-MM-DD}` — makes the pull idempotent per
-   * business/bureau/day so a double-click cannot bill the data provider twice
-   * (TASK-05 edge case).
-   */
-  idempotencyKey: string;
-}
-
-export interface MonitoringJob {
-  businessId: string;
-  bureau: Bureau;
-  reason: 'scheduled_refresh';
 }
 
 export interface EmailJob {
@@ -58,9 +36,6 @@ export const EMAIL_TEMPLATES = {
   passwordReset: 'password-reset',
   contactAutoresponder: 'contact-autoresponder',
   ticketReply: 'ticket-reply',
-  reportReady: 'report-ready',
-  reportFailed: 'report-failed',
-  scoreAlert: 'score-alert',
   paymentFailed: 'payment-failed',
   subscriptionActivated: 'subscription-activated',
   enterpriseLead: 'enterprise-lead',
@@ -75,8 +50,6 @@ export interface KybJob {
 /** Maps each queue to its payload so producers and consumers cannot drift. */
 export interface JobPayloadMap {
   [QUEUE_NAMES.stripeEvents]: StripeEventJob;
-  [QUEUE_NAMES.reportPull]: ReportPullJob;
-  [QUEUE_NAMES.monitoring]: MonitoringJob;
   [QUEUE_NAMES.emails]: EmailJob;
   [QUEUE_NAMES.kyb]: KybJob;
   [QUEUE_NAMES.reportingRun]: never;
@@ -89,12 +62,3 @@ export interface EnqueueOptions {
   attempts?: number;
 }
 
-/** Builds the per-day idempotency key for a report pull. */
-export function reportPullIdempotencyKey(
-  businessId: string,
-  bureau: Bureau,
-  date: Date = new Date(),
-): string {
-  const day = date.toISOString().slice(0, 10);
-  return `${businessId}:${bureau}:${day}`;
-}

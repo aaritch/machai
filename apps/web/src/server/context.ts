@@ -188,7 +188,7 @@ export function deriveOnboardingSteps(state: {
     {
       key: 'verify_email',
       title: 'Verify your email',
-      description: 'Confirm your address to unlock subscribing and report pulls.',
+      description: 'Confirm your address to unlock subscribing and reporting.',
       complete: state.emailVerified,
       href: '/dashboard/settings',
     },
@@ -208,10 +208,10 @@ export function deriveOnboardingSteps(state: {
     },
     {
       key: 'connect_bureau',
-      title: 'Connect a bureau',
-      description: 'Pull your first report to see where your file stands.',
+      title: 'Start reporting',
+      description: 'Choose a plan so your activity is included in the monthly submission.',
       complete: state.hasConnectedBureau,
-      href: '/dashboard/score',
+      href: '/dashboard/billing',
     },
     {
       key: 'complete_profile',

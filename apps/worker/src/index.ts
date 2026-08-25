@@ -6,17 +6,15 @@ import { queueTransportName, startConsumer, type Consumer } from '@machai/queue'
 import { QUEUE_NAMES } from '@machai/types';
 import { handleEmail } from './consumers/emails';
 import { handleKyb } from './consumers/kyb';
-import { handleMonitoring } from './consumers/monitoring';
-import { handleReportPull } from './consumers/report-pull';
 import { handleStripeEvent } from './consumers/stripe-events';
 import { startScheduler } from './scheduler/index';
 
 /**
  * Worker entrypoint.
  *
- * Owns everything slow, scheduled, or long-running (project plan C.1): report
- * pulls, monitoring sweeps, Stripe event application, emails, and KYB retries.
- * It serves no user requests and is not the source of truth for auth.
+ * Owns everything slow, scheduled, or long-running (project plan C.1): Stripe
+ * event application, emails, and KYB retries. It serves no user requests and is
+ * not the source of truth for auth.
  *
  * Deployed OFF Vercel — see the Dockerfile.
  */
@@ -46,10 +44,8 @@ async function main(): Promise<void> {
 
   const consumers: Consumer[] = [
     // Concurrency is tuned per queue: emails are cheap and parallelise well,
-    // while report pulls hit a rate-limited paid API and are kept narrow.
+    // while KYB calls an external provider and is kept narrow.
     startConsumer(QUEUE_NAMES.stripeEvents, (payload) => handleStripeEvent(payload as never), 4),
-    startConsumer(QUEUE_NAMES.reportPull, (payload) => handleReportPull(payload as never), 2),
-    startConsumer(QUEUE_NAMES.monitoring, (payload) => handleMonitoring(payload as never), 2),
     startConsumer(QUEUE_NAMES.emails, (payload) => handleEmail(payload as never), 8),
     startConsumer(QUEUE_NAMES.kyb, (payload) => handleKyb(payload as never), 2),
   ];

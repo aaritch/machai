@@ -15,7 +15,6 @@ import {
 } from '@machai/db';
 import { AUDIT_ACTIONS } from '@machai/observability';
 import {
-  BUREAUS,
   ERROR_CODES,
   KYB_SENSITIVE_FIELDS,
   businessProfileUpdateSchema,
@@ -24,7 +23,6 @@ import {
   newTicketSchema,
   ticketReplySchema,
   tradelineSchema,
-  type Bureau,
 } from '@machai/types';
 import { errorState, parseForm, successState, toFormState, type FormState } from '@/lib/form';
 import { requireBusinessOwnership } from '@/server/auth/guards';
@@ -33,7 +31,6 @@ import { setChecklistItemStatus } from '@/server/checklist';
 import { getAccountContext } from '@/server/context';
 import { invalidateVerification } from '@/server/kyb';
 import { RATE_LIMITS, enforceRateLimit } from '@/server/rate-limit';
-import { requestReportPull } from '@/server/reports';
 import { addTicketMessage, createTicket, getTicketThread } from '@/server/tickets';
 
 /**
@@ -44,43 +41,7 @@ import { addTicketMessage, createTicket, getTicketThread } from '@/server/ticket
  * owns the thing it points at.
  */
 
-// --- Reports ----------------------------------------------------------------
-
-export async function pullReportAction(_prev: FormState, formData: FormData): Promise<FormState> {
-  try {
-    const session = await requireVerifiedSession();
-    const context = await getAccountContext();
-    if (!context?.businessId) {
-      return errorState('Add your business details first.', ERROR_CODES.VALIDATION_FAILED);
-    }
-
-    const bureau = String(formData.get('bureau') ?? '') as Bureau;
-    if (!BUREAUS.includes(bureau)) {
-      return errorState('Unknown bureau.', ERROR_CODES.VALIDATION_FAILED);
-    }
-
-    await enforceRateLimit(RATE_LIMITS.reportPull, session.id);
-    const business = await requireBusinessOwnership(session, context.businessId);
-
-    const result = await requestReportPull({
-      user: session,
-      businessId: business.id,
-      bureau,
-      entitlements: context.entitlements,
-      pullsUsedThisMonth: context.pullsUsedThisMonth,
-      kybVerified: business.verificationStatus === 'verified',
-    });
-
-    revalidatePath('/dashboard/score');
-    return successState(
-      result.status === 'queued'
-        ? 'Your report is being retrieved. This usually takes under a minute.'
-        : 'A pull for this bureau is already running today.',
-    );
-  } catch (error) {
-    return toFormState(error);
-  }
-}
+// --- Disputes ---------------------------------------------------------------
 
 export async function fileDisputeAction(_prev: FormState, formData: FormData): Promise<FormState> {
   try {
@@ -112,7 +73,7 @@ export async function fileDisputeAction(_prev: FormState, formData: FormData): P
       metadata: { hasReport: Boolean(input.creditReportId), hasTradeline: Boolean(input.tradelineId) },
     });
 
-    revalidatePath('/dashboard/score');
+    revalidatePath('/dashboard/tradelines');
     return successState('Dispute recorded. We will confirm the outcome once the investigation closes.');
   } catch (error) {
     return toFormState(error);

@@ -75,7 +75,7 @@ const RENDERERS: Record<EmailTemplateKey, Renderer> = {
       text: `Confirm your email address to finish setting up your ${brand.name} account.\n\n${url}\n\nThis link expires in 24 hours. If you did not create an account, ignore this message.`,
       html: layout(
         'Confirm your email address',
-        p(`Confirm your address to finish setting up your ${brand.name} account. Until you do, you can look around but cannot subscribe or pull a report.`) +
+        p(`Confirm your address to finish setting up your ${brand.name} account. Until you do, you can look around but cannot subscribe or start reporting.`) +
           p('This link expires in 24 hours.'),
         { label: 'Confirm email', url },
       ),
@@ -119,48 +119,8 @@ const RENDERERS: Record<EmailTemplateKey, Renderer> = {
     };
   },
 
-  [EMAIL_TEMPLATES.reportReady]: (d) => {
-    const url = `${appUrl}/dashboard/score`;
-    return {
-      subject: `Your ${String(d.bureauLabel ?? '')} report is ready`,
-      text: `Your ${d.bureauLabel} report has finished processing and is available in your dashboard.\n\n${url}`,
-      html: layout(
-        `Your ${String(d.bureauLabel ?? '')} report is ready`,
-        p('Your report has finished processing and is available in your dashboard.') +
-          p(disclosures.noGuarantee),
-        { label: 'View your report', url },
-      ),
-    };
-  },
 
-  [EMAIL_TEMPLATES.reportFailed]: (d) => {
-    const url = `${appUrl}/dashboard/score`;
-    return {
-      subject: `We could not complete your ${String(d.bureauLabel ?? '')} report`,
-      text: `We could not complete your ${d.bureauLabel} report pull. Your monthly allowance was not used — you can try again.\n\n${url}`,
-      html: layout(
-        'That report pull did not complete',
-        p(`We could not complete your ${String(d.bureauLabel ?? '')} report pull.`) +
-          p('Your monthly allowance was not used, so you can try again at no cost.'),
-        { label: 'Try again', url },
-      ),
-    };
-  },
 
-  [EMAIL_TEMPLATES.scoreAlert]: (d) => {
-    const url = `${appUrl}/dashboard/progress`;
-    const direction = Number(d.delta ?? 0) >= 0 ? 'increased' : 'decreased';
-    return {
-      subject: `Your ${String(d.bureauLabel ?? '')} score changed`,
-      text: `Your ${d.bureauLabel} score ${direction} from ${d.previousScore} to ${d.newScore}.\n\n${url}`,
-      html: layout(
-        'Your score changed',
-        p(`Your ${String(d.bureauLabel ?? '')} score ${direction} from ${String(d.previousScore ?? '')} to ${String(d.newScore ?? '')}.`) +
-          p('Scores move for many reasons. Your dashboard shows the risk factors behind this file.'),
-        { label: 'See what changed', url },
-      ),
-    };
-  },
 
   [EMAIL_TEMPLATES.paymentFailed]: () => {
     const url = `${appUrl}/dashboard/billing`;

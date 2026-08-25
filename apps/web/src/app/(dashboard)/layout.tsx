@@ -50,7 +50,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
                   </LinkButton>
                 }
               >
-                Until you confirm it, you cannot subscribe, connect a bureau, or pull a report.
+                Until you confirm it, you cannot subscribe or start reporting.
               </Alert>
             </div>
           ) : null}

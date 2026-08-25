@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     template: `%s · ${brand.name}`,
   },
   description:
-    'Establish and monitor business credit using your EIN, not your personal score. Live bureau reports, score monitoring, and a checklist that tells you what to do next.',
+    'Build business credit in your business name, not against your personal score. We report your payment activity to the commercial bureaus every month.',
   openGraph: {
     type: 'website',
     siteName: brand.name,
