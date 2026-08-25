@@ -48,7 +48,6 @@ export const PLAN_CATALOG: Record<PlanCode, PlanCatalogEntry> = {
       detailedAnalysis: false,
       advancedAnalytics: false,
       supportTier: 'standard',
-      reportingTracker: false,
       marketplaceAccessLevel: 1,
     },
     isContactSales: false,
@@ -79,7 +78,6 @@ export const PLAN_CATALOG: Record<PlanCode, PlanCatalogEntry> = {
       detailedAnalysis: false,
       advancedAnalytics: false,
       supportTier: 'priority',
-      reportingTracker: false,
       marketplaceAccessLevel: 2,
     },
     isContactSales: false,
@@ -96,7 +94,6 @@ export const PLAN_CATALOG: Record<PlanCode, PlanCatalogEntry> = {
     currency: 'usd',
     features: [
       'Everything in Growth, plus each new bureau we are approved to report to',
-      'Monthly reporting tracker — what was submitted, accepted, or rejected, and why',
       'Advanced reporting analytics',
       'Dedicated account manager',
       'Credit-building tips and resources',
@@ -110,7 +107,6 @@ export const PLAN_CATALOG: Record<PlanCode, PlanCatalogEntry> = {
       detailedAnalysis: false,
       advancedAnalytics: true,
       supportTier: 'dedicated',
-      reportingTracker: true,
       marketplaceAccessLevel: 3,
     },
     /**
@@ -154,7 +150,6 @@ export const COMPARISON_ROWS: Array<{
     value: (e) => (e.bureausReportedTo.length === 0 ? '—' : String(e.bureausReportedTo.length)),
   },
   { label: 'Monthly reporting cycle', value: (e) => (e.bureausReportedTo.length > 0 ? 'Included' : '—') },
-  { label: 'Monthly reporting tracker', value: (e) => (e.reportingTracker ? 'Included' : '—') },
   { label: 'Advanced reporting analytics', value: (e) => (e.advancedAnalytics ? 'Included' : '—') },
   {
     label: 'Support',

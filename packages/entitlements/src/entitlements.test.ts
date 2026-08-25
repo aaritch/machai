@@ -27,7 +27,6 @@ const STARTER: Entitlements = {
   detailedAnalysis: false,
   advancedAnalytics: false,
   supportTier: 'standard',
-  reportingTracker: false,
   marketplaceAccessLevel: 1,
 };
 

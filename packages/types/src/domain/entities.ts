@@ -40,8 +40,6 @@ export interface Entitlements {
   detailedAnalysis: boolean;
   advancedAnalytics: boolean;
   supportTier: SupportTier;
-  /** Enterprise-only monthly reporting tracker (Direction B surface). */
-  reportingTracker: boolean;
   /** Highest marketplace access level unlocked. 0 = free content only. */
   marketplaceAccessLevel: number;
 }
@@ -56,7 +54,6 @@ export const FREE_ENTITLEMENTS: Entitlements = {
   detailedAnalysis: false,
   advancedAnalytics: false,
   supportTier: 'standard',
-  reportingTracker: false,
   marketplaceAccessLevel: 0,
 };
 
