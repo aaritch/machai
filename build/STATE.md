@@ -5,8 +5,9 @@ Single source of truth for building the Business Credit Platform, task by task. 
 - Project: Business Credit Platform (Next.js on Vercel + Node worker, PostgreSQL, Redis/BullMQ, Stripe)
 - Companion docs: technical-specification.md, project-plan.md, and the TASK-00..TASK-08 files
 - Code: the monorepo at the repository root. See README.md and docs/adr/ for how it is built.
-- Last updated: 2026-08-03
-- Updated by: Claude (initial build)
+- Last updated: 2026-08-25
+- Updated by: Claude
+- **Read §7.1 (Deviations) before trusting any spec section — the product direction changed.**
 
 ---
 
@@ -46,7 +47,7 @@ For anything touching credit data or reporting claims, DONE also requires the si
 - Background and scheduled work: apps/worker (always-on Node service) deployed off Vercel (Render/Railway/Fly/ECS). Vercel functions are time-limited and must not run long jobs.
 - Data: managed PostgreSQL with connection pooling. Redis for cache, sessions, and the BullMQ job queue. S3/R2 for private files (signed URLs only).
 - Payments: Stripe is the source of truth; local subscriptions/invoices tables are a webhook-updated mirror. Entitlements are read from the mirror, never a live Stripe call in the request path.
-- Two bureau directions, kept separate: Direction A = pulling reports (buildable now, TASK-05). Direction B = furnishing/reporting to bureaus (gated on legal + bureau approval, TASK-06).
+- **Direction A (pulling reports) has been REMOVED from the product** — no plan grants a pull and the code is deleted (V1 in §7.1). Direction B (furnishing) is what the plans sell, and the reporting claims are live — but the submission pipeline is still unbuilt (V3).
 - Non-negotiable invariants: see Section 8.
 
 ---
@@ -61,8 +62,8 @@ Build order follows dependencies. Do not start a task until every task in its De
 | TASK-02 | Authentication and onboarding wizard | 1 | TASK-01 | IN REVIEW | |
 | TASK-03 | Marketing site and help center | 1 | TASK-01 | IN REVIEW | |
 | TASK-04 | Stripe billing and subscriptions | 2 | TASK-01, TASK-02 | IN REVIEW | |
-| TASK-05 | Credit report pulling and dashboard (Direction A) | 3 | TASK-02, TASK-04 | IN REVIEW (mock client) | |
-| TASK-06 | Bureau furnishing pipeline (Direction B) | 4 | TASK-05 + legal and bureau approval | BLOCKED — not started, by design | |
+| TASK-05 | Credit report pulling and dashboard (Direction A) | 3 | TASK-02, TASK-04 | **WITHDRAWN** — removed from the product 2026-08-25 (V1) | |
+| TASK-06 | Bureau furnishing pipeline (Direction B) | 4 | legal + bureau approval | **NOT STARTED — but the product now sells it (V3)** | |
 | TASK-07 | Engagement: checklist, achievements, support, marketplace | 1-3 | TASK-02 | IN REVIEW | |
 | TASK-08 | Security, compliance, observability (cross-cutting) | all | TASK-01 | IN PROGRESS (ongoing) | |
 | Phase 5 | Affiliate program (partial — enrolment, attribution, commissions) | 5 | TASK-02, TASK-04 | IN REVIEW | |
@@ -73,34 +74,38 @@ Section 9 also requires provisioned environments, a restore-tested backup, and
 Legal/Compliance sign-off on anything touching credit data or reporting claims.
 None of those have happened. See Section 6.
 
-Suggested critical path to a launchable product: TASK-01, then TASK-02, then TASK-04, then TASK-05. TASK-03 and TASK-07 can run in parallel once TASK-01/TASK-02 land. TASK-08 controls run alongside every task and are verified continuously. TASK-06 is deferred until its external gates clear.
+The critical path has changed. TASK-05 is withdrawn, so the path to a working product now runs TASK-01 → TASK-02 → TASK-04 → **TASK-06**, which was the deferred task and is now the product. See §7.1.
 
 ---
 
 ## 5. Current focus
 
-The code for TASK-01 through TASK-05, TASK-07, and TASK-08 exists and builds.
-What remains is everything that cannot be written in a repository.
+The product now sells monthly bureau reporting. The marketing, pricing, and
+billing for that are live in production; the thing being sold is not built.
 
 **Next actions, in order:**
 
-1. **Provision the managed services.** Postgres (pooled + direct endpoints),
-   Redis, and an S3/R2 bucket with public access blocked. Then run
-   `pnpm db:migrate` and `pnpm db:seed`. Until this happens the marketing site
-   works and nothing else does.
-2. **Create the three environments** in Vercel with isolated credentials, and
-   set the required variables from `docs/DEPLOYMENT.md`.
-3. **Model the plans in Stripe**, put the Price ids in `STRIPE_PRICE_*`, re-seed,
-   and run the end-to-end billing test in test mode (subscribe, upgrade,
-   downgrade, cancel, failed payment).
-4. **Close decision D8** (worker host) and wire the deploy step in
+1. **Build the TASK-06 submission pipeline, or qualify the claim.** The site
+   tells businesses we report their activity to three bureaus. Nothing is being
+   transmitted — `buildSubmissionFile` throws by design. This is the widest gap
+   between what is promised and what exists. (V3 in §7.1.)
+2. **Confirm D6 in writing.** Plans advertise a $2,500 / $4,000 net-30 trade
+   account. If that is genuine extended credit, the model is the legitimate one
+   §12.2 describes and the copy is accurate. If it is a subscription artefact,
+   both the copy and the arrangement are a bureau disqualifier. Engineering
+   cannot determine which. (V4.)
+3. **Finish Stripe.** Products and prices exist nowhere yet; `STRIPE_PRICE_*`,
+   the secret key, and the webhook secret are unset in Vercel, so checkout
+   cannot complete. `docs/runbooks/stripe-setup.md` has the sequence.
+4. **Provision the managed services.** Production currently has no
+   `DATABASE_URL`, `SESSION_SECRET`, or `ENCRYPTION_KEY`, and `APP_ENV`
+   defaults to `development` — so the fail-fast production guards are inactive.
+   Set `APP_ENV=production` last; it is what makes the app refuse to boot
+   without the rest.
+5. **Replace Terms and Privacy** with counsel-reviewed text. Both still ship
+   with a visible draft banner.
+6. **Close D8** (worker host) and wire the deploy step in
    `.github/workflows/deploy-worker.yml`.
-5. **Replace the Terms and Privacy pages** with counsel-reviewed text. Both ship
-   with a visible draft banner and must not go live as they are.
-6. **Sign the bureau pull data agreement** before `BUREAU_MODE` moves off `mock`.
-   This is the gate on TASK-05 going live (Section 6).
-
-Do not start TASK-06. Its gates are unchanged.
 
 ---
 
@@ -110,14 +115,14 @@ List anything preventing progress. Remove when resolved (record the resolution i
 
 | Task | Blocker | Owner | Opened | Needed to unblock |
 |------|---------|-------|--------|-------------------|
-| TASK-05 | Bureau/aggregator PULL data agreement not signed | Product/Legal | 2026-08-03 | Signed data contract with a bureau or reseller (permissible-use terms) |
-| TASK-06 | Data-furnisher approval not obtained; legitimate arm's-length tradeline source not confirmed; legal review pending | Legal/Compliance | 2026-08-03 | Legal sign-off plus at least one bureau furnisher approval |
+| TASK-06 | **The site claims we report to three bureaus, but no submission pipeline exists.** `buildSubmissionFile` throws by design and no monthly run is scheduled. | Legal/Compliance + BE | 2026-08-25 | Build the pipeline, or qualify the claim until it exists. See V3 in §7.1. |
+| TASK-06 | D6 unresolved: the arm's-length source of furnished tradelines is not confirmed to engineering. Plans now advertise a $2,500/$4,000 net-30 trade account (V4). | Legal/Compliance | 2026-08-03 | Written confirmation that the trade accounts are genuine extended credit, not a subscription artefact (spec §12.2) |
 
 | TASK-01/08 | No managed services provisioned (Postgres, Redis, object storage) and no Vercel project | DevOps | 2026-08-03 | Provision them and set the environment variables in docs/DEPLOYMENT.md |
 | TASK-04 | No Stripe account connected; plans not modelled in Stripe | Product/DevOps | 2026-08-03 | Create Products and Prices, set `STRIPE_PRICE_*`, re-seed, run the test-mode end-to-end |
 | TASK-03 | Terms of Service and Privacy Policy are placeholders | Legal | 2026-08-03 | Counsel-reviewed text replacing both pages (they ship with a visible draft banner) |
 
-Note: TASK-05 can be built against a sandbox/mock bureau client while the agreement is pending, but must not go live until the contract is signed. It is currently built exactly that way — `BUREAU_MODE=mock`, and config refuses `live` outside production.
+TASK-05's pull data agreement is no longer a blocker — the feature it gated has been removed from the product (V1). `BUREAU_MODE` remains `mock` and nothing calls a bureau.
 
 ---
 
@@ -127,7 +132,7 @@ Record every material decision so future sessions do not relitigate them. These 
 
 | # | Decision | Status | Resolution | Date |
 |---|----------|--------|------------|------|
-| D1 | Final plan names, prices, and feature splits | NAMES + PRICES SET; FEATURES OPEN | Foundation $25 / Growth $45 / Premier $99 (set 2026-08-25). The internal `code` values stay `starter`/`professional`/`enterprise` — they are the DB unique key, the URL param, and the `STRIPE_PRICE_*` env suffix, so they do not churn with display names. **Feature splits are still the pre-change lists and describe pulling and monitoring, which is no longer offered** — they need rewriting against what the plans actually include. | 2026-08-25 |
+| D1 | Final plan names, prices, and feature splits | CLOSED | Foundation $25 / Growth $45 / Premier $99, with feature lists rewritten around monthly bureau reporting (2026-08-25). Internal `code` values stay `starter`/`professional`/`enterprise` — they are the DB unique key, the `?plan=` param, and the `STRIPE_PRICE_*` suffix, so they do not churn with display names. See V1 and V4 in §7.1. | 2026-08-25 |
 | D2 | Bureau data source for pulling: direct contracts vs aggregator/reseller | OPEN | Built against a deterministic mock client (`BUREAU_MODE=mock`), which STATE.md §6 permits while the agreement is pending. Live client skeletons and per-bureau field maps exist; the endpoint paths and payload shapes need the integration docs that come with a signed contract. | 2026-08-03 |
 | D3 | KYB provider choice (or manual review queue for v1) | CLOSED | Manual staff review queue for v1, behind a `KybAdapter` interface. Structural checks run automatically and reject obvious garbage; only a human decision returns `verified`. A Middesk adapter is implemented behind the same interface. | 2026-08-03 |
 | D4 | Multiple businesses per user in v1, or exactly one | CLOSED | One business per user in the UI. The schema and queries already support many, so lifting the restriction is a UI change, not a migration. | 2026-08-03 |
@@ -138,6 +143,27 @@ Record every material decision so future sessions do not relitigate them. These 
 
 D2 and D8 remain open but are not blocking further work. D6 must be closed, with
 legal, before TASK-06 — and TASK-06 must not begin before it is.
+
+### 7.1 Deviations from the specification
+
+The spec and task files are not edited when the product changes — they record
+what was specified. Anything the built product does differently is recorded
+here instead. Read this before trusting a spec section at face value.
+
+| # | Deviation | Spec said | Product now | Recorded |
+|---|---|---|---|---|
+| V1 | **The product direction reversed.** Report *pulling* and monitoring (Direction A) was removed entirely; furnishing (Direction B) is the product. | §12.3: "Direction A is buildable and legitimate now… **Launch on Direction A.**" Direction B was Phase 4, gated. | No plan grants a pull. `/dashboard/score` and `/dashboard/progress`, the `BureauClient` pull path, the report-pull and monitoring workers, and the pull email templates are deleted. Plans sell monthly reporting to the bureaus. | 2026-08-25 |
+| V2 | **Furnisher approval asserted for all three bureaus.** `REPORTING_LIVE_*` are true in production. | §12.1: approval is per-bureau, takes weeks to months, and no claim may render ahead of it. | Owner confirmed approval at Creditsafe, Equifax Business, and D&B. The `reporting_live` gate is doing its job — the claim renders because the flags were set, not because it was hardcoded. **Engineering has not seen the agreements.** | 2026-08-25 |
+| V3 | **The reporting claim is live ahead of the pipeline.** | §11.2, TASK-06: a monthly submission pipeline assembles, validates, transmits, and reconciles. | The site states we report to three bureaus. **No pipeline exists.** `buildSubmissionFile` still throws by design and no monthly run is scheduled. Nothing is being transmitted. | 2026-08-25 |
+| V4 | **Plans include a trade account.** | §9.1 tiers were report-access tiers. | Foundation includes a $2,500 net-30 trade account, Growth $4,000. Written as "net-30 trade account" deliberately — §12.2 disqualifies furnishers who report "pay for tradelines", and the legitimate reading requires credit that is actually extended and repaid. **Not verified by engineering.** | 2026-08-25 |
+| V5 | **Premier is self-serve.** | §9.2/§10.5: Enterprise is sales-assisted, CTA "Contact Sales". | `isContactSales: false` — Premier goes through Checkout like the others, so it needs `STRIPE_PRICE_ENTERPRISE` set. | 2026-08-25 |
+| V6 | **Monthly reporting tracker removed.** | §9.3 `reporting_tracker` entitlement; §11.2 surfaces reconciliation to Enterprise. | Removed from the plans, the comparison table, and the `Entitlements` type. The UI was never built (it belongs to TASK-06), so the flag was a dead gate. | 2026-08-25 |
+| V7 | **"EIN only — no SSN" removed from the marketing.** | §1.2 and §6.3 make it the core promise. | Removed from the hero badge and the shared disclosure. The claim survives in six other places (homepage step 1 and FAQ, About, Privacy Policy, two seeded records), left in place at the owner's request. The schema still has no SSN column. | 2026-08-25 |
+
+**V3 is the one to act on.** A public claim that we report to three bureaus,
+with no mechanism behind it, is the gap between marketing and reality that
+§12.4 exists to prevent — only inverted from the case it anticipated. Either
+build the TASK-06 pipeline or qualify the claim.
 
 ---
 
@@ -245,33 +271,39 @@ One block per task. Keep the Notes current; this is where resume-context lives. 
   untested surface.
 
 ### TASK-05 — Credit report pulling and dashboard (Direction A)
-- Status: IN REVIEW (against a mock client)
-- Depends on: TASK-02, TASK-04 | Blocked by: D2 and the pull data agreement (Section 6)
+- Status: **WITHDRAWN** (2026-08-25) — removed from the product, not deferred
 - File: TASK-05-reports-dashboard.md
-- Notes: Built against `MockBureauClient`, which §6 permits. Pull is idempotent
-  per business/bureau/day via a unique index. Eligibility is checked at request
-  time **and** re-checked in the worker, because a plan can lapse in between.
-  Allowance is consumed on success only — a failed pull costs nothing. `no_file`
-  is a first-class state, not an error. Normalization flags unmapped fields
-  rather than substituting defaults. Score alerts dedupe per transition. The
-  Credit Progress chart uses small multiples, one panel per bureau, because the
-  scales differ and a shared axis would be misleading.
-- Verified: normalization drift flagging; mock determinism and scale bounds;
-  pull eligibility across entitlement, allowance, verification, and KYB.
-- **Must not go live** until the pull data agreement is signed and legal has
-  confirmed the permissible-purpose posture.
+- What happened: the product moved from reading bureau data to furnishing it.
+  Pulling was never something we offered, so the UI advertising it was removed
+  and the code behind it deleted: `/dashboard/score`, `/dashboard/progress`,
+  their components, `server/reports.ts`, the report-pull and monitoring worker
+  consumers, the PDF renderer, two queues, and three email templates.
+- Deliberately kept: the `credit_reports` / `score_history` / `score_alerts`
+  tables (dropping them is a destructive migration for no benefit — they are
+  inert), the `REPORT_PULL_*` audit action names (already written to
+  `audit_log`; renaming would falsify existing entries), and
+  `checkPullEligibility` with its tests (the entitlement layer denying pulls is
+  a guarantee worth keeping tested).
+- Still true: `BUREAU_MODE=mock`, and config refuses `live` outside production.
+  Nothing calls a bureau.
 
 ### TASK-06 — Bureau furnishing pipeline (Direction B)
-- Status: BLOCKED — deliberately not started
-- Depends on: TASK-05 + legal review + at least one bureau furnisher approval (Section 6)
+- Status: **NOT STARTED — and the product now sells it**
+- Depends on: legal review + per-bureau furnisher approval (§6)
 - File: TASK-06-furnishing.md
-- Notes: No pipeline exists. `buildSubmissionFile` throws unconditionally, and
-  `checkFurnishingEligibility` structurally rejects subscription-derived,
-  non-arm's-length, and platform-generated records — written now, before there
-  is pressure to ship around it. No monthly run is registered in the scheduler.
-  Rationale in docs/adr/0005-direction-b-deferred.md.
-- Verified: the guard rejects each disqualified shape, and the builder cannot
-  produce a file.
+- This is now the critical path, not a deferred phase. The owner has confirmed
+  furnisher approval at all three bureaus and `REPORTING_LIVE_*` are true in
+  production, so the site states we report to Creditsafe, Equifax Business, and
+  Dun & Bradstreet.
+- **Nothing is transmitted.** `buildSubmissionFile` throws unconditionally,
+  `checkFurnishingEligibility` still rejects subscription-derived and
+  non-arm's-length records by design, and no monthly run is registered in the
+  scheduler. The claim is live; the mechanism is not. (V3 in §7.1.)
+- Before building: close D6. Plans now advertise a $2,500 / $4,000 net-30 trade
+  account (V4), and whether that is genuine extended credit or a subscription
+  artefact decides whether the whole model passes bureau vetting (§12.2).
+  That is a legal and business determination, not an engineering one.
+- Accountable owner remains Legal/Compliance.
 
 ### TASK-07 — Engagement: checklist, achievements, support, marketplace
 - Status: IN REVIEW
@@ -311,6 +343,21 @@ One block per task. Keep the Notes current; this is where resume-context lives. 
 
 Append one line per working session. Newest at the top.
 
+- 2026-08-25 — **Product direction reversed.** Report pulling and monitoring
+  (Direction A) removed entirely — UI, server module, worker consumers, queues,
+  and email templates deleted. Furnishing (Direction B) is now what the plans
+  sell: `REPORTING_LIVE_*` set true in production on the owner's confirmation of
+  furnisher approval at all three bureaus. Plans renamed and repriced —
+  Foundation $25 / Growth $45 / Premier $99 — with a $2,500 / $4,000 net-30
+  trade account added to the first two, Premier switched to self-serve, and the
+  monthly reporting tracker removed. Marketing rewritten throughout: hero,
+  3-steps, FAQ, Terms §5, meta description, seeded content, and emails.
+  Nocturne restyle applied. Every deviation from the spec is recorded in §7.1 —
+  **V3 is the one to act on: the reporting claim is live and the pipeline is
+  not built.** Also fixed: empty `REPORTING_LIVE_*` values in Vercel (the CLI
+  stores an empty string unless `--value` is passed), the marketing pages baking
+  the compliance gate in at build time, and a `.vercelignore` gap that let a
+  local `.env` reach a remote build.
 - 2026-08-06 — Affiliate program (spec §1.3, Phase 5, partial). $10 commission
   earned on a referred account converting to a PAID plan — never on a free
   signup, since signup is free and collects an EIN, which would have funded the
@@ -346,7 +393,9 @@ Append one line per working session. Newest at the top.
 
 ## 12. Quick reference
 
+- **Read §7.1 first.** The product direction reversed on 2026-08-25 and several
+  spec sections no longer describe what is built.
 - Pick next task: first NOT STARTED row in Section 4 whose dependencies are all DONE and which is not in Section 6.
-- Build order (critical path): TASK-01, TASK-02, TASK-04, TASK-05. Parallelizable: TASK-03, TASK-07. Continuous: TASK-08. Deferred: TASK-06.
-- Before you code: read the task file and confirm its blocking decisions (Section 7) are closed.
+- Build order (critical path): TASK-01, TASK-02, TASK-04, then **TASK-06** — which was the deferred task and is now the product. TASK-05 is withdrawn. Parallelizable: TASK-03, TASK-07. Continuous: TASK-08.
+- Before you code: read the task file, confirm its blocking decisions (Section 7) are closed, and check §7.1 for whether that part of the spec still holds.
 - Before you stop: update status, notes, blockers, decisions, changelog, and the header timestamp.
