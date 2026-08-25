@@ -95,6 +95,9 @@ export const PLAN_CATALOG: Record<PlanCode, PlanCatalogEntry> = {
     monthlyPriceCents: 9900,
     currency: 'usd',
     features: [
+      // Leads with the trade accounts, matching Foundation and Growth, so the
+      // three cards can be compared down the same line.
+      'Both net-30 trade accounts in your business name: $2,500 and $4,000',
       'Your payment activity reported to all four bureaus — Creditsafe, Equifax Business, Dun & Bradstreet, and Experian Business',
       'Advanced reporting analytics',
       'Dedicated account manager',
