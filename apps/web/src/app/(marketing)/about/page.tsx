@@ -16,16 +16,16 @@ export default function AboutPage() {
       <p className="mt-5 text-lg leading-relaxed text-neutral-600 dark:text-neutral-300">
         The typical small business borrows on the strength of its owner’s personal credit, for the
         simple reason that no one ever pointed out there was another way. We think that has it the
-        wrong way round — and that it can be put right.
+        wrong way round, and that it can be put right.
       </p>
 
       <section id="story" className="mt-12 space-y-4 text-neutral-700 dark:text-neutral-300">
         <h2 className="text-xl font-semibold text-neutral-900 dark:text-neutral-50">Our story</h2>
         <p className="leading-relaxed">
           Building a business credit file is not difficult. It is simply unexplained. There is a
-          definite sequence to it — register the entity and get an EIN, separate the money, become
-          findable, then open trade accounts that genuinely report — and hardly anyone sets out
-          which steps count, or the order they belong in.
+          definite sequence to it: register the entity and get an EIN, separate the money, become
+          findable, then open trade accounts that genuinely report. Hardly anyone sets out which
+          steps count, or the order they belong in.
         </p>
         <p className="leading-relaxed">
           So owners work it out by guesswork, or hand money to someone promising a number. We took
@@ -58,7 +58,7 @@ export default function AboutPage() {
             <strong className="font-semibold text-neutral-900 dark:text-neutral-100">
               We never invent credit history.
             </strong>{' '}
-            The trade account on your plan is genuine credit you draw on and repay — not a line
+            The trade account on your plan is genuine credit you draw on and repay, not a line
             conjured up to flatter your file. Bureaus refuse furnishers who report fabricated
             accounts, and they are right to. Payment behaviour that never happened is not history.
           </li>
@@ -67,8 +67,8 @@ export default function AboutPage() {
               We never claim reporting we have not earned.
             </strong>{' '}
             Sending your activity to a bureau means that bureau approving us as a data furnisher
-            first — an application and vetting process measured in months. A bureau is named here
-            only after that has happened. Anything short of it we describe as roadmap.
+            first, through an application and vetting process measured in months. A bureau is named
+            here only after that has happened. Anything short of it we describe as roadmap.
           </li>
         </ul>
       </section>
