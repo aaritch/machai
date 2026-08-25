@@ -25,5 +25,18 @@ export function GET() {
       storage: config.hasStorage,
       bureauMode: config.BUREAU_MODE,
     },
+    /**
+     * Which bureaus we currently claim to report to.
+     *
+     * Worth exposing: these flags decide a public regulatory claim, they are
+     * booleans rather than secrets, and when they are misconfigured the only
+     * other symptom is marketing copy quietly reverting to "roadmap" — which
+     * is exactly the failure that is easy to miss and expensive to ship.
+     */
+    reportingLive: {
+      creditsafe: config.REPORTING_LIVE_CREDITSAFE,
+      equifaxBusiness: config.REPORTING_LIVE_EQUIFAX_BUSINESS,
+      dnb: config.REPORTING_LIVE_DNB,
+    },
   });
 }
