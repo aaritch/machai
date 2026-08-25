@@ -117,10 +117,12 @@ export default async function HomePage() {
                     <p className="font-semibold text-neutral-900 dark:text-neutral-50">
                       {bureau.label}
                     </p>
+                    {/* Two states only. The former middle state branched on
+                        pullLive and read "Reports available", which claimed a
+                        capability we do not offer AND contradicted the body text
+                        below it whenever furnisher approval was absent. */}
                     {bureau.reportingLive ? (
                       <Badge tone="success">Reporting live</Badge>
-                    ) : bureau.pullLive ? (
-                      <Badge tone="accent">Reports available</Badge>
                     ) : (
                       <Badge tone="neutral">Roadmap</Badge>
                     )}
