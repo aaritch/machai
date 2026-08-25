@@ -14,22 +14,23 @@ export default function AboutPage() {
         About {brand.name}
       </h1>
       <p className="mt-5 text-lg leading-relaxed text-neutral-600 dark:text-neutral-300">
-        Most small businesses borrow against their owner’s personal credit because nobody ever
-        showed them the alternative. We think that is backwards, and fixable.
+        The typical small business borrows on the strength of its owner’s personal credit, for the
+        simple reason that no one ever pointed out there was another way. We think that has it the
+        wrong way round — and that it can be put right.
       </p>
 
       <section id="story" className="mt-12 space-y-4 text-neutral-700 dark:text-neutral-300">
         <h2 className="text-xl font-semibold text-neutral-900 dark:text-neutral-50">Our story</h2>
         <p className="leading-relaxed">
-          A business credit file is not hard to build. It is just undocumented. The steps are
-          specific and ordered — get an EIN, separate the finances, get listed, open trade accounts
-          that actually report — and almost nobody explains which of them matter or in what
-          sequence.
+          Building a business credit file is not difficult. It is simply unexplained. There is a
+          definite sequence to it — register the entity and get an EIN, separate the money, become
+          findable, then open trade accounts that genuinely report — and hardly anyone sets out
+          which steps count, or the order they belong in.
         </p>
         <p className="leading-relaxed">
-          So owners guess, or they pay someone who promises a number. We built the opposite: show
-          people their real file, chart what it does over time, and give them a checklist with the
-          actual steps on it.
+          So owners work it out by guesswork, or hand money to someone promising a number. We took
+          the other route: extend real trade credit, report how it is paid every month, and hand
+          over a checklist naming each remaining step.
         </p>
       </section>
 
@@ -38,32 +39,36 @@ export default function AboutPage() {
           What we will not do
         </h2>
         <p className="leading-relaxed">
-          This industry has a credibility problem, and most of it comes from three practices. We do
-          none of them:
+          This sector has an honesty problem, and three habits account for most of it. We keep clear
+          of all three:
         </p>
         <ul className="list-disc space-y-2.5 pl-5">
           <li className="leading-relaxed">
             <strong className="font-semibold text-neutral-900 dark:text-neutral-100">
-              We do not promise a score.
+              We never promise a score.
             </strong>{' '}
-            Your file reflects your business’s actual payment behaviour. Anyone guaranteeing a
-            number is either guessing or selling something worse.
+            What appears on your file is a record of how your business actually pays. Anybody
+            warranting a particular number is either speculating or selling you something worse.
+          </li>
+          <li className="leading-relaxed">
+            {/* Reworked rather than reworded: the old bullet said "We do not sell
+                tradelines", which now reads as a flat contradiction of the plans,
+                each of which includes a trade account. The distinction that
+                matters is real extended credit versus a fabricated line. */}
+            <strong className="font-semibold text-neutral-900 dark:text-neutral-100">
+              We never invent credit history.
+            </strong>{' '}
+            The trade account on your plan is genuine credit you draw on and repay — not a line
+            conjured up to flatter your file. Bureaus refuse furnishers who report fabricated
+            accounts, and they are right to. Payment behaviour that never happened is not history.
           </li>
           <li className="leading-relaxed">
             <strong className="font-semibold text-neutral-900 dark:text-neutral-100">
-              We do not sell tradelines.
+              We never claim reporting we have not earned.
             </strong>{' '}
-            Manufacturing a credit line for a fee is the practice the bureaus specifically reject
-            furnishers for. A tradeline that exists because you paid a subscription is not credit
-            history.
-          </li>
-          <li className="leading-relaxed">
-            <strong className="font-semibold text-neutral-900 dark:text-neutral-100">
-              We do not claim reporting we have not earned.
-            </strong>{' '}
-            Reporting your activity to a bureau requires that bureau to approve us as a data
-            furnisher — an application and credentialing process that takes months. We name a bureau
-            only once that is done. Everything else is described as roadmap.
+            Sending your activity to a bureau means that bureau approving us as a data furnisher
+            first — an application and vetting process measured in months. A bureau is named here
+            only after that has happened. Anything short of it we describe as roadmap.
           </li>
         </ul>
       </section>
@@ -72,10 +77,13 @@ export default function AboutPage() {
         <h2 className="text-xl font-semibold text-neutral-900 dark:text-neutral-50">
           How we handle your data
         </h2>
+        {/* The old closing sentence promised private report PDFs. Those were part
+            of the report-pulling feature and no longer exist, so it is gone
+            rather than reworded. */}
         <p className="leading-relaxed">
-          We ask for your EIN and not your Social Security number. Your EIN is encrypted with a key
-          unique to your record, never written to logs, and shown only to you. Every access to it is
-          recorded. Report PDFs are private and reachable only through short-lived links.
+          What we ask for is your EIN, not your Social Security number. That EIN is encrypted under
+          a key belonging to your record alone, kept out of every log, and displayed to nobody but
+          you. Each time it is read, that is written down.
         </p>
       </section>
 
