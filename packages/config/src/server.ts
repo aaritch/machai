@@ -32,6 +32,9 @@ const rawSchema = z.object({
   SESSION_ABSOLUTE_TIMEOUT_HOURS: z.coerce.number().int().positive().default(720),
 
   STRIPE_SECRET_KEY: z.string().optional(),
+  // Read here only so the prefix can be validated at boot. The browser gets it
+  // from the NEXT_PUBLIC_ inlining, not from this module.
+  NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string().optional(),
   STRIPE_WEBHOOK_SECRET: z.string().optional(),
   STRIPE_PRICE_STARTER: z.string().optional(),
   STRIPE_PRICE_PROFESSIONAL: z.string().optional(),
@@ -106,6 +109,39 @@ function build(env: NodeJS.ProcessEnv = process.env) {
   }
   const c = parsed.data;
   const isProduction = c.APP_ENV === 'production';
+
+  /**
+   * Reject a key whose prefix Stripe does not issue.
+   *
+   * The environment checks below only compare `sk_test_` against `sk_live_`,
+   * so anything else — a typo, a key from another service, a truncated paste —
+   * passed straight through. `hasStripe` then went true, the pricing page
+   * rendered Subscribe buttons, and the first sign of trouble was a customer
+   * reaching Checkout and getting an auth error. Fail at boot instead.
+   */
+  if (c.STRIPE_SECRET_KEY && !/^(sk|rk)_(test|live)_/.test(c.STRIPE_SECRET_KEY)) {
+    throw new ConfigError(
+      `STRIPE_SECRET_KEY does not look like a Stripe secret key. Expected it to start with ` +
+        `sk_test_, sk_live_, rk_test_ or rk_live_, got "${c.STRIPE_SECRET_KEY.slice(0, 4)}…". ` +
+        `Publishable keys (pk_) belong in NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY, and the webhook ` +
+        `signing secret (whsec_) in STRIPE_WEBHOOK_SECRET.`,
+    );
+  }
+  if (
+    c.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY &&
+    !/^pk_(test|live)_/.test(c.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
+  ) {
+    throw new ConfigError(
+      `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY should start with pk_test_ or pk_live_. A secret key ` +
+        `here would be published to the browser.`,
+    );
+  }
+  if (c.STRIPE_WEBHOOK_SECRET && !c.STRIPE_WEBHOOK_SECRET.startsWith('whsec_')) {
+    throw new ConfigError(
+      `STRIPE_WEBHOOK_SECRET should start with whsec_. It is the endpoint's signing secret, ` +
+        `not an API key — see docs/runbooks/stripe-setup.md.`,
+    );
+  }
 
   if (isProduction) {
     const missing = PRODUCTION_REQUIRED.filter((key) => !c[key]);

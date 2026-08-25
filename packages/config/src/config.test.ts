@@ -98,6 +98,46 @@ describe('config validation', () => {
     ).toThrow(/TEST key/);
   });
 
+  it('rejects a key whose prefix Stripe does not issue (failure)', () => {
+    // The environment checks only compare sk_test_ against sk_live_, so a
+    // typo or a key from another service used to pass, leaving Subscribe
+    // buttons live until a customer hit an auth error at Checkout.
+    expect(() =>
+      buildConfigForTest({ ...BASE_ENV, STRIPE_SECRET_KEY: 'mk_1TQj2WPMOcmzJ8il4jbOd5KB' }),
+    ).toThrow(/does not look like a Stripe secret key/);
+  });
+
+  it('rejects a publishable key in the secret slot, and the reverse (security)', () => {
+    expect(() =>
+      buildConfigForTest({ ...BASE_ENV, STRIPE_SECRET_KEY: 'pk_test_abc' }),
+    ).toThrow(/does not look like a Stripe secret key/);
+
+    // A secret key in the publishable slot would be inlined into the browser
+    // bundle — the worse direction of the same mistake.
+    expect(() =>
+      buildConfigForTest({ ...BASE_ENV, NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: 'sk_test_abc' }),
+    ).toThrow(/should start with pk_test_ or pk_live_/);
+  });
+
+  it('rejects an API key in the webhook-secret slot (failure)', () => {
+    expect(() =>
+      buildConfigForTest({ ...BASE_ENV, STRIPE_WEBHOOK_SECRET: 'sk_test_abc' }),
+    ).toThrow(/should start with whsec_/);
+  });
+
+  it('accepts the four shapes Stripe actually issues', () => {
+    for (const key of ['sk_test_abc', 'sk_live_abc', 'rk_test_abc', 'rk_live_abc']) {
+      const env = { ...BASE_ENV, APP_ENV: key.includes('live') ? 'production' : 'test' };
+      if (key.includes('live')) {
+        Object.assign(env, {
+          DATABASE_URL: 'postgres://x',
+          STRIPE_WEBHOOK_SECRET: 'whsec_abc',
+        });
+      }
+      expect(() => buildConfigForTest({ ...env, STRIPE_SECRET_KEY: key })).not.toThrow();
+    }
+  });
+
   it('refuses live bureau mode outside production (security)', () => {
     // Non-production must never make a billable provider call.
     expect(() =>
