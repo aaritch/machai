@@ -250,7 +250,7 @@ export const FAQS = [
   {
     question: 'Which bureaus can I pull a report from?',
     answer:
-      'Your plan determines which bureaus you can pull from. Starter includes one bureau of your choice; Professional and Enterprise include more. The bureaus currently available are listed on the pricing page and in your dashboard.',
+      'Your plan determines your bureau coverage. Foundation includes one bureau of your choice; Growth and Premier include more. The bureaus currently available are listed on the pricing page and in your dashboard.',
     category: 'credit-reporting',
     displayOrder: 4,
   },

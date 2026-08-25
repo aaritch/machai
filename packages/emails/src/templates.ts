@@ -190,10 +190,10 @@ const RENDERERS: Record<EmailTemplateKey, Renderer> = {
   },
 
   [EMAIL_TEMPLATES.enterpriseLead]: (d) => ({
-    subject: `Enterprise enquiry from ${String(d.companyName ?? '')}`,
-    text: `New Enterprise enquiry.\n\nCompany: ${d.companyName}\nContact: ${d.contactName}\nEmail: ${d.email}\nPhone: ${d.phone ?? '—'}`,
+    subject: `Premier enquiry from ${String(d.companyName ?? '')}`,
+    text: `New Premier enquiry.\n\nCompany: ${d.companyName}\nContact: ${d.contactName}\nEmail: ${d.email}\nPhone: ${d.phone ?? '—'}`,
     html: layout(
-      'New Enterprise enquiry',
+      'New Premier enquiry',
       p(`Company: ${String(d.companyName ?? '')}`) +
         p(`Contact: ${String(d.contactName ?? '')} · ${String(d.email ?? '')}`) +
         p(`Phone: ${String(d.phone ?? '—')}`),

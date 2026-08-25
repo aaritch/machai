@@ -26,7 +26,7 @@ export default async function ContactPage({
           </h1>
           <p className="mt-4 text-lg leading-relaxed text-neutral-600 dark:text-neutral-300">
             {isEnterprise
-              ? 'Tell us about your business and what you need covered, and we will put together an Enterprise plan that fits.'
+              ? 'Tell us about your business and what you need covered, and we will put together a Premier plan that fits.'
               : 'Every message becomes a tracked ticket, so nothing gets lost in an inbox. Tell us what you need and we will pick it up.'}
           </p>
 

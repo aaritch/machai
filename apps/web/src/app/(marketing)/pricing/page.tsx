@@ -7,7 +7,7 @@ import { getActivePlans } from '@/server/plans';
 export const metadata: Metadata = {
   title: 'Pricing',
   description:
-    'Straightforward monthly plans for pulling and monitoring your business credit file. Starter, Professional, and Enterprise.',
+    'Straightforward monthly plans for building your business credit file. Foundation, Growth, and Premier.',
 };
 
 /**

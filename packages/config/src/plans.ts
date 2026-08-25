@@ -4,7 +4,7 @@ import type { Entitlements, PlanCode, PlanSummary } from '@machai/types';
  * Plan catalog — decision D1.
  *
  * STATE.md §7 left final names, prices, and feature splits open; this mirrors
- * the $19/$49/$99 model from the spec (§9.1) so the product is buildable, and
+ * the tier structure from the spec (§9.1) so the product is buildable, and
  * is the single place to change them when the real numbers land.
  *
  * This catalog is the SEED for the `plans` table. At runtime the pricing page
@@ -22,11 +22,14 @@ export interface PlanCatalogEntry
 
 export const PLAN_CATALOG: Record<PlanCode, PlanCatalogEntry> = {
   starter: {
+    // `code` is the stable internal identifier — the DB unique key, the URL
+    // param, and the STRIPE_PRICE_* env suffix. Display names change with
+    // marketing; codes deliberately do not.
     code: 'starter',
-    name: 'Starter',
+    name: 'Foundation',
     tagline: 'Unlock your live credit file.',
     description: 'See your report, your score, and what to fix.',
-    monthlyPriceCents: 1900,
+    monthlyPriceCents: 2500,
     currency: 'usd',
     features: [
       'Live business credit report from Creditsafe or Equifax Business (your choice)',
@@ -53,10 +56,10 @@ export const PLAN_CATALOG: Record<PlanCode, PlanCatalogEntry> = {
   },
   professional: {
     code: 'professional',
-    name: 'Professional',
+    name: 'Growth',
     tagline: 'Ideal for growing businesses seeking funding.',
     description: 'Both bureaus, deeper analysis, and faster support.',
-    monthlyPriceCents: 4900,
+    monthlyPriceCents: 4500,
     currency: 'usd',
     features: [
       'Live reports from both bureaus (Creditsafe and Equifax Business)',
@@ -83,7 +86,7 @@ export const PLAN_CATALOG: Record<PlanCode, PlanCatalogEntry> = {
   },
   enterprise: {
     code: 'enterprise',
-    name: 'Enterprise',
+    name: 'Premier',
     tagline: 'Comprehensive solution for established businesses.',
     description: 'Every bureau we add, advanced analytics, and a named contact.',
     monthlyPriceCents: 9900,
