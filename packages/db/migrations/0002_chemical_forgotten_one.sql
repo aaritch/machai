@@ -1,0 +1,1 @@
+ALTER TYPE "public"."bureau" ADD VALUE 'experian_business';

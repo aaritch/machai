@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it } from 'vitest';
+import { BUREAU_LABELS } from '@machai/types';
 import { ConfigError, buildConfigForTest, resetConfigCache } from './server';
 import { getAvailabilityLine, getBureauCapabilities, getReportingClaim } from './bureaus';
 import { PLAN_CATALOG, PLAN_LIST } from './plans';
@@ -39,11 +40,11 @@ describe('what the plans actually sell', () => {
   it('never advertises a bureau in a feature list without covering it', () => {
     // A feature bullet naming a bureau must be backed by bureausReportedTo,
     // otherwise the pricing page promises coverage the gating layer denies.
-    const labels: Record<string, string> = {
-      Creditsafe: 'creditsafe',
-      'Equifax Business': 'equifax_business',
-      'Dun & Bradstreet': 'dnb',
-    };
+    // Derived from BUREAU_LABELS rather than hand-listed, so a bureau added to
+    // the enum is covered by this guard automatically.
+    const labels = Object.fromEntries(
+      Object.entries(BUREAU_LABELS).map(([code, label]) => [label, code]),
+    );
     for (const plan of PLAN_LIST) {
       const text = plan.features.join(' ');
       for (const [label, code] of Object.entries(labels)) {

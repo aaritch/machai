@@ -34,11 +34,13 @@ export function getBureauCapabilities(): BureauCapability[] {
     creditsafe: c.REPORTING_LIVE_CREDITSAFE,
     equifax_business: c.REPORTING_LIVE_EQUIFAX_BUSINESS,
     dnb: c.REPORTING_LIVE_DNB,
+    experian_business: c.REPORTING_LIVE_EXPERIAN_BUSINESS,
   };
   const pullConfigured: Record<Bureau, boolean> = {
     creditsafe: Boolean(c.CREDITSAFE_API_KEY),
     equifax_business: Boolean(c.EQUIFAX_BUSINESS_API_KEY),
     dnb: Boolean(c.DNB_API_KEY),
+    experian_business: Boolean(c.EXPERIAN_BUSINESS_API_KEY),
   };
 
   return BUREAUS.map((bureau) => ({

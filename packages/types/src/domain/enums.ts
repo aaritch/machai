@@ -46,13 +46,17 @@ export type SubscriptionStatus = (typeof SUBSCRIPTION_STATUSES)[number];
 export const INVOICE_STATUSES = ['draft', 'open', 'paid', 'void', 'uncollectible'] as const;
 export type InvoiceStatus = (typeof INVOICE_STATUSES)[number];
 
-export const BUREAUS = ['creditsafe', 'equifax_business', 'dnb'] as const;
+// Order matters: this drives the order bureau cards render in, and it is the
+// order of the Postgres `bureau` enum. Append only — reordering would require
+// rewriting the database type.
+export const BUREAUS = ['creditsafe', 'equifax_business', 'dnb', 'experian_business'] as const;
 export type Bureau = (typeof BUREAUS)[number];
 
 export const BUREAU_LABELS: Record<Bureau, string> = {
   creditsafe: 'Creditsafe',
   equifax_business: 'Equifax Business',
   dnb: 'Dun & Bradstreet',
+  experian_business: 'Experian Business',
 };
 
 /**
@@ -63,6 +67,8 @@ export const BUREAU_SCORE_SCALES: Record<Bureau, { min: number; max: number; lab
   creditsafe: { min: 0, max: 100, label: '0–100' },
   equifax_business: { min: 0, max: 650, label: '0–650' },
   dnb: { min: 0, max: 100, label: '0–100' },
+  // Experian's Intelliscore Plus runs 1–100.
+  experian_business: { min: 1, max: 100, label: '1–100' },
 };
 
 export const REPORT_STATUSES = ['pending', 'available', 'failed', 'no_file'] as const;

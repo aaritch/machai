@@ -15,6 +15,13 @@
       "when": 1786039091984,
       "tag": "0001_bizarre_grey_gargoyle",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1787681606408,
+      "tag": "0002_chemical_forgotten_one",
+      "breakpoints": true
     }
   ]
 }

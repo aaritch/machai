@@ -55,10 +55,13 @@ const rawSchema = z.object({
   EQUIFAX_BUSINESS_API_KEY: z.string().optional(),
   DNB_API_URL: z.string().optional(),
   DNB_API_KEY: z.string().optional(),
+  EXPERIAN_BUSINESS_API_URL: z.string().optional(),
+  EXPERIAN_BUSINESS_API_KEY: z.string().optional(),
 
   REPORTING_LIVE_CREDITSAFE: booleanish,
   REPORTING_LIVE_EQUIFAX_BUSINESS: booleanish,
   REPORTING_LIVE_DNB: booleanish,
+  REPORTING_LIVE_EXPERIAN_BUSINESS: booleanish,
 
   KYB_PROVIDER: z.enum(['manual', 'middesk']).default('manual'),
   KYB_API_KEY: z.string().optional(),

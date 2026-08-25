@@ -88,18 +88,18 @@ export const PLAN_CATALOG: Record<PlanCode, PlanCatalogEntry> = {
   enterprise: {
     code: 'enterprise',
     name: 'Premier',
-    tagline: 'Comprehensive solution for established businesses.',
+    tagline: 'Reported to all four bureaus, with a named contact.',
     description: 'Full coverage, full visibility, and a named contact.',
     monthlyPriceCents: 9900,
     currency: 'usd',
     features: [
-      'Everything in Growth, plus each new bureau we are approved to report to',
+      'Your payment activity reported to all four bureaus — Creditsafe, Equifax Business, Dun & Bradstreet, and Experian Business',
       'Advanced reporting analytics',
       'Dedicated account manager',
       'Credit-building tips and resources',
     ],
     entitlements: {
-      bureausReportedTo: ['creditsafe', 'equifax_business', 'dnb'],
+      bureausReportedTo: ['creditsafe', 'equifax_business', 'dnb', 'experian_business'],
       bureausAllowed: [],
       reportsPerMonth: 0,
       monitoring: false,
