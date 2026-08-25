@@ -88,11 +88,18 @@ export function getReportingClaim(): {
   };
 }
 
-/** Bureaus a plan can pull from, for the "Bureaus available with a plan" line. */
+/**
+ * The bureau coverage line shown in the footer.
+ *
+ * Derived from furnisher approval, not from our ability to read a bureau's
+ * data — the two are independent, and this line sits next to the reporting
+ * claim, so branching it on the wrong flag would let the footer imply coverage
+ * that has not been approved.
+ */
 export function getAvailabilityLine(): string {
-  const pullable = getBureauCapabilities().filter((b) => b.pullLive);
-  if (pullable.length === 0) return 'Bureau coverage is being onboarded.';
-  return `Bureaus available with a plan: ${joinLabels(pullable)}`;
+  const live = getBureauCapabilities().filter((b) => b.reportingLive);
+  if (live.length === 0) return 'Bureau coverage is being onboarded.';
+  return `Bureaus we report to: ${joinLabels(live)}`;
 }
 
 function joinLabels(caps: BureauCapability[]): string {

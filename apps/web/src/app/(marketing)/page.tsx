@@ -103,8 +103,10 @@ export default async function HomePage() {
             The bureaus we work with
           </h2>
           <p className="mx-auto mt-3 max-w-2xl text-center text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+            {/* claimLine is null until a bureau approves us as a furnisher, so the
+                fallback must not assert reporting of any kind. */}
             {claim.claimLine ??
-              'We pull and monitor your file at the commercial bureaus below. We do not claim to report your activity to a bureau until that bureau has approved us as a data furnisher.'}
+              'We name a bureau here only once it has approved us as a data furnisher.'}
           </p>
 
           <div className="mt-10 grid gap-4 sm:grid-cols-3">
@@ -123,10 +125,13 @@ export default async function HomePage() {
                       <Badge tone="neutral">Roadmap</Badge>
                     )}
                   </div>
+                  {/* Branches on reportingLive, not pullLive: this sentence makes a
+                      furnishing claim, so it must follow furnisher approval rather
+                      than our ability to read the bureau's data. */}
                   <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
-                    {bureau.pullLive
-                      ? `Pull and monitor your file. Scored on a ${bureau.scoreScale} scale.`
-                      : 'Not yet available. We will add it once coverage is in place.'}
+                    {bureau.reportingLive
+                      ? `We report your account activity to ${bureau.label}. Scored on a ${bureau.scoreScale} scale.`
+                      : 'Not yet available. We will add it once approval is in place.'}
                   </p>
                 </CardBody>
               </Card>

@@ -59,10 +59,11 @@ export default function LearnPage() {
             <Card key={bureau.bureau}>
               <CardBody className="p-5">
                 <p className="font-semibold text-neutral-900 dark:text-neutral-50">{bureau.label}</p>
+                {/* Gated on furnisher approval, like every other reporting claim. */}
                 <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
                   Scored on a {bureau.scoreScale} scale.{' '}
-                  {bureau.pullLive
-                    ? 'Available to pull and monitor with a plan.'
+                  {bureau.reportingLive
+                    ? 'We report your account activity here.'
                     : 'Not yet part of our coverage.'}
                 </p>
               </CardBody>

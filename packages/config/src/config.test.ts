@@ -110,9 +110,24 @@ describe('reporting claim gating', () => {
     expect(capabilities.every((c) => !c.reportingLive)).toBe(true);
   });
 
-  it('states pull availability without implying reporting', () => {
+  it('names no bureau in the coverage line until one is approved (compliance)', () => {
+    // The footer line sits beside the reporting claim, so it is gated on
+    // furnisher approval too — not on our ability to read a bureau's data.
     const line = getAvailabilityLine();
-    expect(line).toContain('Bureaus available with a plan');
-    expect(line.toLowerCase()).not.toContain('reports to');
+    expect(line).toBe('Bureau coverage is being onboarded.');
+    expect(line).not.toContain('Creditsafe');
+    expect(line).not.toContain('Equifax');
+  });
+
+  it('names only the approved bureaus once approval lands', () => {
+    process.env.REPORTING_LIVE_CREDITSAFE = 'true';
+    resetConfigCache();
+
+    const line = getAvailabilityLine();
+    expect(line).toContain('Creditsafe');
+    // The unapproved ones stay out of it, even though mock mode makes every
+    // bureau readable.
+    expect(line).not.toContain('Equifax');
+    expect(line).not.toContain('Dun & Bradstreet');
   });
 });
