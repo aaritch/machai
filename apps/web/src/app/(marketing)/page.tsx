@@ -201,16 +201,16 @@ export default async function HomePage() {
             <dl className="mt-6 space-y-6">
               {[
                 {
-                  q: 'Do I need to give you my SSN?',
-                  a: 'No. We build your file against your EIN and do not collect a Social Security number at signup.',
+                  q: 'What exactly do you report?',
+                  a: 'Your payment activity on the accounts you hold — submitted monthly, as it actually happened. We report the record; we do not create accounts on your behalf.',
                 },
                 {
-                  q: 'Can you guarantee my score will go up?',
-                  a: 'No, and you should be sceptical of anyone who does. Scores are set by each bureau from your business’s actual activity.',
+                  q: 'How long before it shows up on my file?',
+                  a: 'Submissions go out on a monthly cycle. Each bureau decides when and how a submission appears, and a brand-new file often takes a few cycles before it is scoreable.',
                 },
                 {
-                  q: 'What if the bureau has no file for me?',
-                  a: 'That is normal for a newer business, and it is not an error. The checklist walks through what causes a file to be created.',
+                  q: 'What if something you reported is wrong?',
+                  a: 'Tell us and we investigate it and correct the record. You can also dispute it directly with the bureau — that right is yours regardless of anything we do.',
                 },
               ].map((item) => (
                 <div key={item.q}>
