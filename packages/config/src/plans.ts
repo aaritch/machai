@@ -88,7 +88,9 @@ export const PLAN_CATALOG: Record<PlanCode, PlanCatalogEntry> = {
   enterprise: {
     code: 'enterprise',
     name: 'Premier',
-    tagline: 'Reported to all four bureaus, with a named contact.',
+    // Positions the tier rather than restating the first feature bullet, which
+    // the previous tagline duplicated almost word for word.
+    tagline: 'For established businesses that need every bureau covered.',
     description: 'Full coverage, full visibility, and a named contact.',
     monthlyPriceCents: 9900,
     currency: 'usd',
