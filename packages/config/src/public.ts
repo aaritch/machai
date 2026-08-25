@@ -32,7 +32,10 @@ export const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? ''
 export const disclosures = {
   noGuarantee:
     'Credit outcomes depend on your business activity and each bureau’s own criteria. No score increase or funding approval is guaranteed.',
-  einOnly: 'Free to start — EIN only, no SSN required and no card required.',
+  // Renamed from `einOnly`: the EIN-only / no-SSN claim was removed from the
+  // site, and a constant whose name still advertises it would invite the copy
+  // creeping back in.
+  freeToStart: 'Free to start — no card required.',
   reportingRoadmap:
     'Bureau reporting is added only after that bureau approves us as a data furnisher. Bureaus not yet approved are shown as roadmap, never as active reporting.',
   pullDisclosure:

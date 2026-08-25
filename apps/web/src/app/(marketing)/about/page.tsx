@@ -85,7 +85,7 @@ export default function AboutPage() {
             Start with a free account
           </h2>
           <p className="mt-2 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-            {disclosures.einOnly}
+            {disclosures.freeToStart}
           </p>
           <div className="mt-5 flex flex-wrap gap-3">
             <LinkButton href="/signup">Create your account</LinkButton>

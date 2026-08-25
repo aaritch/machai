@@ -31,8 +31,7 @@ export default async function HomePage() {
       <section className="border-b border-neutral-200 dark:border-neutral-800">
         <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:py-28">
           <div className="max-w-3xl">
-            <Badge tone="accent">EIN only — no SSN required</Badge>
-            <h1 className="mt-5 text-4xl font-semibold leading-[1.1] tracking-tight text-neutral-900 sm:text-5xl lg:text-6xl dark:text-neutral-50">
+            <h1 className="text-4xl font-semibold leading-[1.1] tracking-tight text-neutral-900 sm:text-5xl lg:text-6xl dark:text-neutral-50">
               Your business should stand on its own credit, not your personal score.
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-neutral-600 dark:text-neutral-300">
@@ -48,7 +47,7 @@ export default async function HomePage() {
               </LinkButton>
             </div>
             <p className="mt-4 text-sm text-neutral-500 dark:text-neutral-400">
-              {disclosures.einOnly}
+              {disclosures.freeToStart}
             </p>
           </div>
         </div>

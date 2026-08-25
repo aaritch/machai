@@ -136,7 +136,7 @@ export default function LearnPage() {
               See where your file stands today
             </p>
             <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
-              Create a free account and work the checklist. {disclosures.einOnly}
+              Create a free account and work the checklist. {disclosures.freeToStart}
             </p>
           </div>
           <LinkButton href="/signup">Get started</LinkButton>

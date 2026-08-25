@@ -41,7 +41,7 @@ export default async function SignupPage({
         Create your account
       </h1>
       <p className="mt-3 text-center text-sm text-neutral-600 dark:text-neutral-400">
-        {disclosures.einOnly}
+        {disclosures.freeToStart}
       </p>
 
       <ol className="mt-8 flex items-center justify-center gap-2" aria-label="Signup progress">
