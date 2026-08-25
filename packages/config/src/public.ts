@@ -38,6 +38,9 @@ export const disclosures = {
   freeToStart: 'Free to start — no card required.',
   reportingRoadmap:
     'Bureau reporting is added only after that bureau approves us as a data furnisher. Bureaus not yet approved are shown as roadmap, never as active reporting.',
-  pullDisclosure:
-    'Live report pulls require an active plan and a verified business, and are subject to each bureau’s permissible-use terms.',
+  // Replaced `pullDisclosure`, which described live report pulls — a
+  // capability no plan includes. What a subscriber needs told instead is what
+  // reporting requires of them and what it cannot promise.
+  reportingDisclosure:
+    'Reporting requires an active plan and a verified business. Each bureau decides what it accepts and how it scores it, and a file can take several cycles to appear.',
 } as const;

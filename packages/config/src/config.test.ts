@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import { ConfigError, buildConfigForTest, resetConfigCache } from './server';
 import { getAvailabilityLine, getBureauCapabilities, getReportingClaim } from './bureaus';
+import { PLAN_CATALOG, PLAN_LIST } from './plans';
 
 const BASE_ENV = {
   APP_ENV: 'test',
@@ -14,6 +15,53 @@ afterEach(() => {
   process.env.REPORTING_LIVE_CREDITSAFE = 'false';
   process.env.REPORTING_LIVE_EQUIFAX_BUSINESS = 'false';
   process.env.REPORTING_LIVE_DNB = 'false';
+});
+
+describe('what the plans actually sell', () => {
+  it('sells reporting, not reading — no plan grants a pull', () => {
+    // We are not a bureau-data reseller. A plan that quietly granted pulls
+    // would advertise a capability we do not offer and could bill a data
+    // provider we have no agreement with.
+    for (const plan of PLAN_LIST) {
+      expect(plan.entitlements.reportsPerMonth).toBe(0);
+      expect(plan.entitlements.bureausAllowed).toEqual([]);
+      expect(plan.entitlements.monitoring).toBe(false);
+      expect(plan.entitlements.alerts).toBe(false);
+    }
+  });
+
+  it('gives every paid plan at least one bureau to report to', () => {
+    for (const plan of PLAN_LIST) {
+      expect(plan.entitlements.bureausReportedTo.length).toBeGreaterThan(0);
+    }
+  });
+
+  it('never advertises a bureau in a feature list without covering it', () => {
+    // A feature bullet naming a bureau must be backed by bureausReportedTo,
+    // otherwise the pricing page promises coverage the gating layer denies.
+    const labels: Record<string, string> = {
+      Creditsafe: 'creditsafe',
+      'Equifax Business': 'equifax_business',
+      'Dun & Bradstreet': 'dnb',
+    };
+    for (const plan of PLAN_LIST) {
+      const text = plan.features.join(' ');
+      for (const [label, code] of Object.entries(labels)) {
+        if (text.includes(label)) {
+          expect(plan.entitlements.bureausReportedTo).toContain(code);
+        }
+      }
+    }
+  });
+
+  it('prices the tiers as set', () => {
+    expect(PLAN_CATALOG.starter.monthlyPriceCents).toBe(2500);
+    expect(PLAN_CATALOG.professional.monthlyPriceCents).toBe(4500);
+    expect(PLAN_CATALOG.enterprise.monthlyPriceCents).toBe(9900);
+    expect(PLAN_CATALOG.starter.name).toBe('Foundation');
+    expect(PLAN_CATALOG.professional.name).toBe('Growth');
+    expect(PLAN_CATALOG.enterprise.name).toBe('Premier');
+  });
 });
 
 describe('config validation', () => {

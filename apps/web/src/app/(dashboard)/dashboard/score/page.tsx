@@ -140,7 +140,7 @@ export default async function ScorePage() {
       </div>
 
       <p className="text-xs leading-relaxed text-neutral-500 dark:text-neutral-400">
-        {disclosures.pullDisclosure} {disclosures.noGuarantee}
+        {disclosures.reportingDisclosure} {disclosures.noGuarantee}
       </p>
     </div>
   );

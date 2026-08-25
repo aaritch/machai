@@ -10,7 +10,16 @@ import {
 
 /** TASK-04 / TASK-05 gating scenarios. */
 
+/**
+ * A fixture with pulls switched ON.
+ *
+ * No plan we currently sell includes pulls, but the pull-eligibility logic is
+ * still live behind the dashboard, so it still needs testing. Keeping the
+ * fixture independent of PLAN_CATALOG means a pricing change cannot silently
+ * stop exercising these paths.
+ */
 const STARTER: Entitlements = {
+  bureausReportedTo: ['creditsafe'],
   bureausAllowed: ['creditsafe'],
   reportsPerMonth: 2,
   monitoring: true,

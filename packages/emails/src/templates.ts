@@ -180,10 +180,11 @@ const RENDERERS: Record<EmailTemplateKey, Renderer> = {
     const url = `${appUrl}/dashboard`;
     return {
       subject: `Your ${String(d.planName ?? '')} plan is active`,
-      text: `Your ${d.planName} plan is active. Live bureau data is now unlocked in your dashboard.\n\n${url}`,
+      text: `Your ${d.planName} plan is active. Your payment activity will be included in the next monthly reporting cycle.\n\n${url}`,
       html: layout(
         `Your ${String(d.planName ?? '')} plan is active`,
-        p('Live bureau data is now unlocked in your dashboard.') + p(disclosures.pullDisclosure),
+        p('Your payment activity will be included in the next monthly reporting cycle.') +
+          p(disclosures.reportingDisclosure),
         { label: 'Open your dashboard', url },
       ),
     };

@@ -23,9 +23,17 @@ import type {
  * between tiers.
  */
 export interface Entitlements {
-  /** Which bureaus this plan may pull from. Empty for free/absent plans. */
+  /**
+   * Bureaus this plan's payment activity is FURNISHED to — the product we
+   * actually sell. Independent of `bureausAllowed`, which governs reading.
+   */
+  bureausReportedTo: Bureau[];
+  /**
+   * Which bureaus this plan may PULL from. Empty on every current plan:
+   * reading a customer's file is not something we offer.
+   */
   bureausAllowed: Bureau[];
-  /** Live pull allowance per calendar month. 0 means no live pulls. */
+  /** Live pull allowance per calendar month. 0 on every current plan. */
   reportsPerMonth: number;
   monitoring: boolean;
   alerts: boolean;
@@ -40,6 +48,7 @@ export interface Entitlements {
 
 /** The empty set a free or lapsed account resolves to. */
 export const FREE_ENTITLEMENTS: Entitlements = {
+  bureausReportedTo: [],
   bureausAllowed: [],
   reportsPerMonth: 0,
   monitoring: false,

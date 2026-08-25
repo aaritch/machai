@@ -27,8 +27,8 @@ export default async function PricingPage() {
           Pick the coverage you need
         </h1>
         <p className="mt-4 text-lg leading-relaxed text-neutral-600 dark:text-neutral-300">
-          Every plan includes the dashboard, the credit checklist, and the tradeline tracker. What
-          changes is how many bureaus you can pull from, and how often.
+          Every plan reports your payment activity on a monthly cycle. What changes is how many
+          bureaus we report it to, and how much visibility you get into each submission.
         </p>
       </div>
 
@@ -144,7 +144,7 @@ export default async function PricingPage() {
 
       <div className="mt-12 space-y-2 rounded-xl border border-neutral-200 bg-white p-6 text-sm leading-relaxed text-neutral-600 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400">
         <p>{getAvailabilityLine()}</p>
-        <p>{disclosures.pullDisclosure}</p>
+        <p>{disclosures.reportingDisclosure}</p>
         <p>{disclosures.noGuarantee}</p>
       </div>
     </div>
