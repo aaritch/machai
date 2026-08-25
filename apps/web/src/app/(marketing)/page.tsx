@@ -14,10 +14,18 @@ export const metadata: Metadata = {
 /**
  * Home page (spec §5.2).
  *
- * Statically rendered where possible — this is the top of the acquisition
- * funnel and its content must be in the HTML, not assembled client-side
- * (TASK-03 caveat on SEO regressions).
+ * Server-rendered per request rather than prerendered at build.
+ *
+ * This page renders the bureau reporting claim, which is gated on furnisher
+ * approval (spec §12.4). Baking that into a build means the claim can only
+ * change with a deploy — so turning a bureau OFF, the case that actually
+ * matters, would leave a live claim standing until someone redeployed. A
+ * compliance gate has to take effect when it is flipped.
+ *
+ * The content is still fully server-rendered, so the SEO requirement in
+ * TASK-03 (no client-assembled content) is unaffected.
  */
+export const dynamic = 'force-dynamic';
 export default async function HomePage() {
   const plans = await getActivePlans();
   const bureaus = getBureauCapabilities();
