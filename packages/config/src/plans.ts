@@ -27,11 +27,12 @@ export const PLAN_CATALOG: Record<PlanCode, PlanCatalogEntry> = {
     // marketing; codes deliberately do not.
     code: 'starter',
     name: 'Foundation',
-    tagline: 'Start building a file in your business name.',
+    tagline: 'A $2,500 trade account, reported every month.',
     description: 'Your payment activity, reported where it counts.',
     monthlyPriceCents: 2500,
     currency: 'usd',
     features: [
+      'A $2,500 net-30 trade account in your business name',
       'Your payment activity reported to Creditsafe every month',
       'Business identity verified before your first submission',
       'Reporting status visible in your dashboard',
@@ -59,11 +60,12 @@ export const PLAN_CATALOG: Record<PlanCode, PlanCatalogEntry> = {
   professional: {
     code: 'professional',
     name: 'Growth',
-    tagline: 'Ideal for growing businesses seeking funding.',
+    tagline: 'A $4,000 trade account, reported to all three bureaus.',
     description: 'Reported to every bureau we are approved to furnish.',
     monthlyPriceCents: 4500,
     currency: 'usd',
     features: [
+      'A $4,000 net-30 trade account in your business name',
       'Your payment activity reported to all three bureaus — Creditsafe, Equifax Business, and Dun & Bradstreet',
       'Business identity verified before your first submission',
       'Reporting status visible in your dashboard',
@@ -113,8 +115,12 @@ export const PLAN_CATALOG: Record<PlanCode, PlanCatalogEntry> = {
       reportingTracker: true,
       marketplaceAccessLevel: 3,
     },
-    /** Sales-assisted: no self-serve Checkout (spec §9.2, §10.5). */
-    isContactSales: true,
+    /**
+     * Self-serve, like the other two. This tier was sales-assisted per spec
+     * §9.2; making the CTA "Get started" means it now goes through Checkout,
+     * so it needs STRIPE_PRICE_ENTERPRISE set like any other plan.
+     */
+    isContactSales: false,
     displayOrder: 3,
     isActive: true,
     stripePriceEnvKey: 'STRIPE_PRICE_ENTERPRISE',

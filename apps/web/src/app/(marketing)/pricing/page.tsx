@@ -74,7 +74,8 @@ export default async function PricingPage() {
                   ))}
                 </ul>
 
-                {/* Enterprise is sales-assisted — no self-serve checkout (spec §9.2). */}
+                {/* Label matches the homepage teaser: every self-serve plan says
+                    "Get started", so the two surfaces cannot drift. */}
                 <LinkButton
                   href={plan.isContactSales ? '/contact?topic=enterprise' : `/signup?plan=${plan.code}`}
                   variant={featured ? 'primary' : 'secondary'}
@@ -82,7 +83,7 @@ export default async function PricingPage() {
                   size="lg"
                   className="mt-7"
                 >
-                  {plan.isContactSales ? 'Contact sales' : 'Subscribe'}
+                  {plan.isContactSales ? 'Contact sales' : 'Get started'}
                 </LinkButton>
               </CardBody>
             </Card>
