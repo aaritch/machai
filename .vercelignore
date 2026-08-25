@@ -1,0 +1,28 @@
+# Files the Vercel CLI must never upload.
+#
+# `.gitignore` is NOT a reliable substitute here: a `vercel --prod` from a
+# developer's machine uploads the working directory, and it was observed
+# shipping a gitignored root `.env` into the build — where next.config.ts's
+# loadEnvFile() then read it, pointing the build at a localhost database and
+# carrying local SESSION_SECRET / ENCRYPTION_KEY values with it.
+#
+# Deploying through the Git integration cannot have this problem, because it
+# builds from the commit. This file closes the hole for CLI deploys.
+
+.env
+.env.*
+!.env.example
+
+# Local build and tooling output — never needed by a remote build.
+.next
+.turbo
+node_modules
+coverage
+*.tsbuildinfo
+
+# Nothing here affects the built site.
+build/
+docs/
+tests/
+**/*.test.ts
+**/*.test.tsx
