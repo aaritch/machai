@@ -35,7 +35,6 @@ export const PLAN_CATALOG: Record<PlanCode, PlanCatalogEntry> = {
       'A $2,500 net-30 trade account in your business name',
       'Your payment activity reported to Creditsafe every month',
       'Business identity verified before your first submission',
-      'Reporting status visible in your dashboard',
       'Credit-building tips and resources',
       'Email support',
     ],
@@ -68,7 +67,6 @@ export const PLAN_CATALOG: Record<PlanCode, PlanCatalogEntry> = {
       'A $4,000 net-30 trade account in your business name',
       'Your payment activity reported to all three bureaus — Creditsafe, Equifax Business, and Dun & Bradstreet',
       'Business identity verified before your first submission',
-      'Reporting status visible in your dashboard',
       'Credit-building tips and resources',
       'Priority phone and chat support',
     ],
@@ -156,7 +154,6 @@ export const COMPARISON_ROWS: Array<{
     value: (e) => (e.bureausReportedTo.length === 0 ? '—' : String(e.bureausReportedTo.length)),
   },
   { label: 'Monthly reporting cycle', value: (e) => (e.bureausReportedTo.length > 0 ? 'Included' : '—') },
-  { label: 'Reporting status in dashboard', value: (e) => (e.bureausReportedTo.length > 0 ? 'Included' : '—') },
   { label: 'Monthly reporting tracker', value: (e) => (e.reportingTracker ? 'Included' : '—') },
   { label: 'Advanced reporting analytics', value: (e) => (e.advancedAnalytics ? 'Included' : '—') },
   {
