@@ -14,12 +14,7 @@ export const metadata: Metadata = {
  *
  * An SEO asset, so the substance is server-rendered rather than assembled on
  * the client, and it is deliberately long-form.
- *
- * Dynamic for the same reason as the home page: it renders per-bureau
- * reporting claims, and those must reflect the current flags rather than
- * whatever was true at build time.
  */
-export const dynamic = 'force-dynamic';
 export default function LearnPage() {
   const bureaus = getBureauCapabilities();
 

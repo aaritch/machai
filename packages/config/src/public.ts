@@ -9,8 +9,8 @@
 export const brand = {
   name: process.env.NEXT_PUBLIC_BRAND_NAME ?? 'Machai',
   tagline: 'Business credit built on your EIN — not your personal score.',
-  supportEmail: 'support@machai.example',
-  salesEmail: 'sales@machai.example',
+  supportEmail: 'support@machaibusinesssolutions.com',
+  salesEmail: 'sales@machaibusinesssolutions.com',
   responseTime: 'Most inquiries get a reply within 24 hours',
   hours: 'Mon–Fri, 9:00 AM – 6:00 PM Eastern',
   supportScope: 'Billing, reporting, onboarding, account access, and questions about your file',

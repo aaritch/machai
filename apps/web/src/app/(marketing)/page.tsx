@@ -6,26 +6,21 @@ import { formatPrice } from '@machai/config';
 import { Card, CardBody, LinkButton } from '@machai/ui';
 import { getActivePlans } from '@/server/plans';
 
+// Overrides the root description for this page specifically, so it has to say
+// the same thing — it still advertised report pulls and monitoring.
 export const metadata: Metadata = {
   description:
-    'Build business credit on your EIN, not your personal score. Live bureau reports, monthly monitoring, and a checklist that tells you exactly what to do next.',
+    'Build business credit in your business name, not against your personal score. We report your payment activity to the commercial bureaus every month.',
 };
 
 /**
  * Home page (spec §5.2).
  *
- * Server-rendered per request rather than prerendered at build.
- *
- * This page renders the bureau reporting claim, which is gated on furnisher
- * approval (spec §12.4). Baking that into a build means the claim can only
- * change with a deploy — so turning a bureau OFF, the case that actually
- * matters, would leave a live claim standing until someone redeployed. A
- * compliance gate has to take effect when it is flipped.
- *
- * The content is still fully server-rendered, so the SEO requirement in
- * TASK-03 (no client-assembled content) is unaffected.
+ * Rendered per request via the route group's layout, which carries
+ * `force-dynamic` because the bureau claim on this page and in the footer is
+ * gated on furnisher approval. Content is still fully server-rendered, so the
+ * TASK-03 SEO requirement is unaffected.
  */
-export const dynamic = 'force-dynamic';
 export default async function HomePage() {
   const plans = await getActivePlans();
   const bureaus = getBureauCapabilities();

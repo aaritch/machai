@@ -1,5 +1,6 @@
 'use server';
 
+import { brand } from '@machai/config/public';
 import { isDatabaseConfigured } from '@machai/db';
 import { logger } from '@machai/observability';
 import {
@@ -115,7 +116,9 @@ export async function submitEnterpriseLead(
     if (lead) {
       await enqueue(QUEUE_NAMES.emails, `enterprise-lead:${lead.id}`, {
         template: EMAIL_TEMPLATES.enterpriseLead,
-        to: 'sales@machai.example',
+        // From the brand config, not hardcoded — this address was a placeholder
+        // that would have sent every sales lead into a void.
+        to: brand.salesEmail,
         data: {
           companyName: input.companyName,
           contactName: `${input.firstName} ${input.lastName}`,
