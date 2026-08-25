@@ -27,7 +27,7 @@ export const PLAN_CATALOG: Record<PlanCode, PlanCatalogEntry> = {
     // marketing; codes deliberately do not.
     code: 'starter',
     name: 'Foundation',
-    tagline: 'Start building a file in your business’s name.',
+    tagline: 'Start building a file in your business name.',
     description: 'Your payment activity, reported where it counts.',
     monthlyPriceCents: 2500,
     currency: 'usd',
