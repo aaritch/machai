@@ -146,49 +146,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Feature highlights */}
-      <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
-        <h2 className="text-3xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-50">
-          Everything you need to build a file
-        </h2>
-        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {[
-            {
-              title: 'Live credit reports',
-              body: 'Pull your current file on demand and download it as a PDF. Your allowance is set by your plan.',
-            },
-            {
-              title: 'Score monitoring',
-              body: 'We re-check on a schedule and email you when your score moves, so you are not the last to know.',
-            },
-            {
-              title: 'Credit progress',
-              body: 'Every observation charted per bureau, on that bureau’s own scale, so trends are actually readable.',
-            },
-            {
-              title: 'Tradeline tracker',
-              body: 'Log the accounts you hold and see which are reporting. Nudges flag the ones that are not.',
-            },
-            {
-              title: 'Credit checklist',
-              body: 'Twelve concrete steps, in order, from getting a D-U-N-S number to keeping utilisation down.',
-            },
-            {
-              title: 'Dispute tracking',
-              body: 'File a dispute against a report or tradeline and follow the investigation to its outcome.',
-            },
-          ].map((feature) => (
-            <div key={feature.title}>
-              <h3 className="text-base font-semibold text-neutral-900 dark:text-neutral-50">
-                {feature.title}
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-                {feature.body}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
 
       {/* Plan teaser */}
       <section className="border-t border-neutral-200 py-20 dark:border-neutral-800">
