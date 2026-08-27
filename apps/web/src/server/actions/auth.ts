@@ -66,13 +66,31 @@ import { requestKybVerification } from '@/server/kyb';
 
 // --- Wizard step persistence ------------------------------------------------
 
+/**
+ * Shared failure for a wizard step that could not be saved.
+ *
+ * In practice this means the database is unreachable. It is deliberately the
+ * same wording as the failure at final submit, so a user who gets this at step
+ * one is told the same thing they would have been told at step three, rather
+ * than filling in two more forms first.
+ */
+function signupUnavailable(): FormState {
+  logger.error('signup step could not be persisted; is DATABASE_URL set?');
+  return errorState(
+    'Sign-ups are temporarily unavailable, so we could not save your details. Please try again shortly.',
+    ERROR_CODES.PROVIDER_UNAVAILABLE,
+  );
+}
+
 export async function saveBusinessStepAction(
   _prev: FormState,
   formData: FormData,
 ): Promise<FormState> {
   try {
     const step = parseForm(businessStepSchema, formData);
-    await saveBusinessStep(step);
+    // Only advance if the step actually persisted. Advancing on a failed save
+    // bounces the user back here with an empty form and no error shown.
+    if (!(await saveBusinessStep(step))) return signupUnavailable();
     return successState(undefined, '/signup?step=representative');
   } catch (error) {
     return toFormState(error);
@@ -85,7 +103,7 @@ export async function saveRepresentativeStepAction(
 ): Promise<FormState> {
   try {
     const step = parseForm(representativeStepSchema, formData);
-    await saveRepresentativeStep(step);
+    if (!(await saveRepresentativeStep(step))) return signupUnavailable();
     return successState(undefined, '/signup?step=account');
   } catch (error) {
     return toFormState(error);

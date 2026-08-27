@@ -82,22 +82,32 @@ export async function loadDraft(): Promise<OnboardingDraft> {
   }
 }
 
-export async function saveBusinessStep(step: BusinessStepInput): Promise<void> {
-  if (!isDatabaseConfigured()) return;
+/**
+ * Returns false when the step could not be persisted.
+ *
+ * The caller must not advance the wizard on a false: the next step re-reads the
+ * draft to decide which step to show, so an unsaved step sends the user
+ * straight back to this one with an empty form and no explanation.
+ */
+export async function saveBusinessStep(step: BusinessStepInput): Promise<boolean> {
+  if (!isDatabaseConfigured()) return false;
   const key = await getDraftKey(true);
-  if (!key) return;
+  if (!key) return false;
 
   const { ein, ...rest } = step;
   const payload = JSON.stringify({ ...rest, einEncrypted: await encryptField(String(ein)) });
 
   await upsertDraft(key, { businessStep: payload });
+  return true;
 }
 
-export async function saveRepresentativeStep(step: RepresentativeStepInput): Promise<void> {
-  if (!isDatabaseConfigured()) return;
+/** Returns false when the step could not be persisted. See above. */
+export async function saveRepresentativeStep(step: RepresentativeStepInput): Promise<boolean> {
+  if (!isDatabaseConfigured()) return false;
   const key = await getDraftKey(true);
-  if (!key) return;
+  if (!key) return false;
   await upsertDraft(key, { representativeStep: JSON.stringify(step) });
+  return true;
 }
 
 async function upsertDraft(
